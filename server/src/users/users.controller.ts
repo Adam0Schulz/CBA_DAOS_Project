@@ -1,14 +1,14 @@
+// users.controller.ts
+
 import { Controller, Get } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User } from '@packages/types';
 
-@Controller('users')
+@Controller('users') // This defines the route prefix
 export class UsersController {
-    constructor(private readonly usersService: UsersService) { }
+  constructor(private readonly usersService: UsersService) {}
 
-    @Get()
-    getUsers(): Promise<User[]> {
-        console.log("robert is just ok enough")
-        return this.usersService.getAllUsers();
-    }
+  @Get() // This defines the GET /users endpoint
+  findAll() {
+    return this.usersService.getAllUsers();
+  }
 }

@@ -7,8 +7,9 @@ async function bootstrap() {
 
   // dummy data service
   const seeder = app.get(DataSeederService);
-  await seeder.seed(); 
+  await seeder.seed();
 
   await app.listen(process.env.PORT ?? 3000);
 }
+
 bootstrap();

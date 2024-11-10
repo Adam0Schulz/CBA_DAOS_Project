@@ -20,12 +20,22 @@ import { EnsembleRepository } from './repositories/ensemble.repository';
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([
-        { name: 'User', schema: UserSchema },
-        { name: 'UserDetail', schema: UserDetailSchema },
-        { name: 'Ensemble', schema: EnsembleSchema },
+      { name: 'User', schema: UserSchema },
+      { name: 'UserDetail', schema: UserDetailSchema },
+      { name: 'Ensemble', schema: EnsembleSchema },
     ]),
   ],
-  providers: [DatabaseService, UserRepository, UserDetailRepository, EnsembleRepository],
-  exports: [DatabaseService, UserRepository, UserDetailRepository, EnsembleRepository],
+  providers: [
+    DatabaseService,
+    UserRepository,
+    UserDetailRepository,
+    EnsembleRepository,
+  ],
+  exports: [
+    DatabaseService,
+    UserRepository,
+    UserDetailRepository,
+    EnsembleRepository,
+  ],
 })
 export class DatabaseModule {}

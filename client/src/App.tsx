@@ -4,12 +4,19 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { User } from "@packages/types"
 
-async function App() {
+function App() {
   const [count, setCount] = useState(0)
 
-  const response = await fetch("http://localhost:3000/users")
-  const any = await response.json()
-    
+  const handleFetch = async () => {
+
+    const response = await fetch("/api/users");
+    const users: User[] = await response.json();
+    console.log(users[0]);
+
+  }
+
+  handleFetch();
+
   
 
   return (
@@ -22,7 +29,7 @@ async function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React {any}</h1>
+      <h1>Vite + React</h1>
       <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

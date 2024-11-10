@@ -5,7 +5,9 @@ import { Ensemble } from '../schemas/ensemble.schema';
 
 @Injectable()
 export class EnsembleRepository {
-  constructor(@InjectModel('Ensemble') private ensembleModel: Model<Ensemble>) {}
+  constructor(
+    @InjectModel('Ensemble') private ensembleModel: Model<Ensemble>,
+  ) {}
 
   async findAll(): Promise<Ensemble[]> {
     return this.ensembleModel.find().exec();
@@ -20,8 +22,13 @@ export class EnsembleRepository {
     return this.ensembleModel.findById(id).exec();
   }
 
-  async updateEnsemble(id: string, updateData: Partial<Ensemble>): Promise<Ensemble | null> {
-    return this.ensembleModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+  async updateEnsemble(
+    id: string,
+    updateData: Partial<Ensemble>,
+  ): Promise<Ensemble | null> {
+    return this.ensembleModel
+      .findByIdAndUpdate(id, updateData, { new: true })
+      .exec();
   }
 
   async deleteEnsemble(id: string): Promise<Ensemble | null> {

@@ -6,7 +6,7 @@ export class UsersService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async getAllUsers() {
-    return this.userRepository.findAll(); 
+    return this.userRepository.findAll();
   }
 
   async createUser(data: any) {

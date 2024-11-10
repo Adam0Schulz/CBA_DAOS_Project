@@ -5,7 +5,9 @@ import { UserDetail } from '../schemas/userDetail.schema';
 
 @Injectable()
 export class UserDetailRepository {
-  constructor(@InjectModel('UserDetail') private userDetailModel: Model<UserDetail>) {}
+  constructor(
+    @InjectModel('UserDetail') private userDetailModel: Model<UserDetail>,
+  ) {}
 
   async createUserDetail(data: any): Promise<UserDetail> {
     const newUserDetail = new this.userDetailModel(data);
@@ -16,8 +18,13 @@ export class UserDetailRepository {
     return this.userDetailModel.findOne({ userId }).exec();
   }
 
-  async updateUserDetail(id: string, updateData: Partial<UserDetail>): Promise<UserDetail | null> {
-    return this.userDetailModel.findByIdAndUpdate(id, updateData, { new: true }).exec();
+  async updateUserDetail(
+    id: string,
+    updateData: Partial<UserDetail>,
+  ): Promise<UserDetail | null> {
+    return this.userDetailModel
+      .findByIdAndUpdate(id, updateData, { new: true })
+      .exec();
   }
 
   async deleteUserDetail(id: string): Promise<UserDetail | null> {

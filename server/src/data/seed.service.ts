@@ -11,14 +11,34 @@ export class DataSeederService {
     const existingUsers = await this.usersService.getAllUsers();
     if (existingUsers.length > 0) {
       this.logger.log('Database already populated, skipping seeding');
-      return; 
+      return;
     }
 
     const dummyUsers = [
-      { firstName: 'John', lastName: 'Doe', email: 'john@example.com', password: 'password123' },
-      { firstName: 'Jane', lastName: 'Doe', email: 'jane@example.com', password: 'password123' },
-      { firstName: 'Thomas', lastName: 'Larsen', email: 'thomas@example.com', password: 'password123' },
-      { firstName: 'Julie', lastName: 'Jensen', email: 'julie@example.com', password: 'password123' },
+      {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john@example.com',
+        password: 'password123',
+      },
+      {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        email: 'jane@example.com',
+        password: 'password123',
+      },
+      {
+        firstName: 'Thomas',
+        lastName: 'Larsen',
+        email: 'thomas@example.com',
+        password: 'password123',
+      },
+      {
+        firstName: 'Julie',
+        lastName: 'Jensen',
+        email: 'julie@example.com',
+        password: 'password123',
+      },
     ];
 
     for (const userData of dummyUsers) {

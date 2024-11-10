@@ -6,7 +6,7 @@ export class EnsemblesService {
   constructor(private readonly ensembleRepository: EnsembleRepository) {}
 
   async getAllEnsembles() {
-    return this.ensembleRepository.findAll(); 
+    return this.ensembleRepository.findAll();
   }
 
   async createEnsemble(data: any) {
