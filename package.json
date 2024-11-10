@@ -1,0 +1,23 @@
+{
+  "name": "test-npm-workspaces",
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "server",
+    "packages/*"
+  ],
+  "scripts": {
+    "database:init": "npm run database:init -w server",
+    "dev": "concurrently -r \"npm start dev -w server\" \"npm run dev -w client\"",
+    "format": "npx prettier . --write"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "cross-env": "^7.0.3",
+    "prettier": "3.3.3"
+  },
+  "dependencies": {
+    "mongoose": "^8.8.1"
+  }
+}

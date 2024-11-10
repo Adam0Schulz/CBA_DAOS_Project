@@ -1,13 +1,6 @@
-import { Schema, Document } from 'mongoose';
+import { Schema } from 'mongoose';
+import { User } from "@packages/types"
 
-export interface User extends Document {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  createdAt: Date;
-  lastLoggedInAt: Date;
-}
 
 export const UserSchema = new Schema<User>({
   firstName: { type: String, required: true },
