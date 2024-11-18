@@ -1,0 +1,118 @@
+.auth {
+    margin: 3rem auto;
+    width: 95%;
+    max-width: 25rem;
+    border-radius: 6px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  .auth h1 {
+    text-align: center;
+    color:var(--primary-color);
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .passwordInput {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .passwordInput input {
+    flex: 1;
+    color: #000000;
+    border-radius: 15px;
+    width: 100%;
+    text-align: left;
+    padding: 0.25rem;
+    padding-left: 1rem;
+    font-family: sans-serif;
+  }
+
+  
+  .passwordInput input {
+    flex: 1;
+    background-color: var(--chakra-blue-50);
+    color: #000000;
+    border-radius: 15px;
+    width: 100%;
+    text-align: left;
+    padding: 0.25rem;
+    padding-left: 1rem;
+    font-family: sans-serif;
+  }
+  
+  .eyeIcon {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color:var(--primary-color);
+  }
+  
+  .control {
+    position: relative;
+    margin-bottom: 0.5rem;
+    font-weight: 100;
+  }
+  
+  
+  .control label {
+    display: block;
+    color:var(--primary-color);
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .control input {
+    color: #000000;
+    border-radius: 15px;
+    background-color: var(--chakra-blue-50);
+    width: 100%;
+    text-align: left;
+    padding: 0.25rem;
+    padding-left: 1rem;
+    font-family: sans-serif;
+
+  }
+  
+  .control input[type="password"] {
+    font-family: sans-serif;
+  }
+  
+  .control .eye-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 10px; 
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .actions .toggle {
+    margin-top: 1rem;
+    background-color: transparent;
+    color: #2563EB;
+    border: none;
+    padding: 0.15rem 1.5rem;
+  }
+  
+  .actions .toggle:hover {
+    background-color: transparent;
+    color: #60a5fa;
+  }
+  
+  
+  
