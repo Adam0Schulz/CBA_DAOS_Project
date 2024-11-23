@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const isLoggedIn = false; // Replace with actual login status logic
@@ -29,17 +29,13 @@ const Header: React.FC = () => {
           </button>
         </Link>
         {isLoggedIn ? (
-          <Link
-            to="/logout"
-          >
+          <Link to="/logout">
             <button className="text-lg text-blue-800 bg-white hover:bg-blue-700 px-4 py-2 rounded">
               Logout
             </button>
           </Link>
         ) : (
-          <Link
-            to="/login"
-          >
+          <Link to="/login">
             <button className="text-lg text-blue-800 bg-white hover:bg-gray-500 hover:text-white px-4 py-2 rounded">
               Login
             </button>

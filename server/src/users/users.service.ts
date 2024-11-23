@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../databases/repositories/user.repository';
+import { UserCore } from '@packages/types';
 
 @Injectable()
 export class UsersService {
@@ -9,7 +10,7 @@ export class UsersService {
     return this.userRepository.findAll();
   }
 
-  async createUser(data: any) {
+  async createUser(data: UserCore) {
     return this.userRepository.createUser(data);
   }
 

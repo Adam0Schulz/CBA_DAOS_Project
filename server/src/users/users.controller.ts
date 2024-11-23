@@ -1,7 +1,8 @@
 // users.controller.ts
 
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { User, UserCore } from '@packages/types';
 
 @Controller('users') // This defines the route prefix
 export class UsersController {
@@ -10,5 +11,11 @@ export class UsersController {
   @Get() // This defines the GET /users endpoint
   findAll() {
     return this.usersService.getAllUsers();
+  }
+
+  @Post("/register")
+  create(@Body() data: UserCore) {
+    // TODO check if user exists
+    return this.usersService.createUser(data);
   }
 }
