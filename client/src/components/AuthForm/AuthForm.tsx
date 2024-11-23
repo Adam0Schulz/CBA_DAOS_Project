@@ -38,7 +38,7 @@ const AuthForm: React.FC = () => {
     }
 
     try {
-      const url = isLogin ? "/api/user/login" : "/api/user/register";
+      const url = isLogin ? "/api/users/login" : "/api/users/register";
       const response = await fetch(url, {
         method: "POST",
         headers: {

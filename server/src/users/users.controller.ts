@@ -2,7 +2,7 @@
 
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { User, UserCore } from '@packages/types';
+import { UserCore } from '@packages/types';
 
 @Controller('users') // This defines the route prefix
 export class UsersController {
