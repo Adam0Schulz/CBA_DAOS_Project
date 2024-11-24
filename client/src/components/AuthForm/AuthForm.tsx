@@ -2,6 +2,22 @@ import React, { useState, useRef, FormEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
+interface AuthResponse {
+  access_token: string;
+  user: {
+    id: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
+}
+
+interface ErrorResponse {
+  statusCode: number;
+  message: string | string[];
+  error?: string;
+}
+
 const AuthForm: React.FC = () => {
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
@@ -10,14 +26,19 @@ const AuthForm: React.FC = () => {
   const lastNameInputRef = useRef<HTMLInputElement>(null);
   const [showPasswords, setShowPasswords] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const submitHandler = async (event: FormEvent) => {
     event.preventDefault();
+    setError(null);
+    setSuccessMessage(null);
+    
     const enteredEmail = emailInputRef.current?.value;
     const enteredPassword = passwordInputRef.current?.value;
 
     if (!enteredEmail || !enteredPassword) {
-      alert("Please fill out all fields.");
+      setError("Please fill out all fields.");
       return;
     }
 
@@ -27,18 +48,18 @@ const AuthForm: React.FC = () => {
       const enteredConfirmPassword = confirmPasswordInputRef.current?.value;
 
       if (!enteredFirstName || !enteredLastName) {
-        alert("Please provide your first and last name.");
+        setError("Please provide your first and last name.");
         return;
       }
 
       if (!enteredConfirmPassword || enteredPassword !== enteredConfirmPassword) {
-        alert("Passwords do not match.");
+        setError("Passwords do not match.");
         return;
       }
     }
 
     try {
-      const url = isLogin ? "/api/users/login" : "/api/users/register";
+      const url = isLogin ? "http://localhost:5000/auth/login" : "http://localhost:5000/auth/register";
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -59,12 +80,34 @@ const AuthForm: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || (isLogin ? "Login failed." : "Registration failed."));
+        const errorData = data as ErrorResponse;
+        const errorMessage = Array.isArray(errorData.message) 
+          ? errorData.message[0] 
+          : errorData.message || "Authentication failed";
+        throw new Error(errorMessage);
       }
 
-      alert(isLogin ? "Login successful!" : "Registration successful!");
+      const authData = data as AuthResponse;
+      
+      if (isLogin) {
+        // Store the token and user data only for login
+        localStorage.setItem('token', authData.access_token);
+        localStorage.setItem('user', JSON.stringify(authData.user));
+        // Redirect to main page after login
+        window.location.href = '/';
+      } else {
+        // For registration, just switch to login mode
+        setIsLogin(true);
+        setError(null);
+        setSuccessMessage("Registration successful! You can now log in with your credentials.");
+        // Clear the form fields
+        if (emailInputRef.current) emailInputRef.current.value = '';
+        if (passwordInputRef.current) passwordInputRef.current.value = '';
+        if (firstNameInputRef.current) firstNameInputRef.current.value = '';
+        if (lastNameInputRef.current) lastNameInputRef.current.value = '';
+      }
     } catch (error: any) {
-      alert(error.message || "An unexpected error occurred.");
+      setError(error.message || "An unexpected error occurred.");
     }
   };
 
@@ -74,10 +117,28 @@ const AuthForm: React.FC = () => {
 
   const toggleAuthMode = () => {
     setIsLogin((prevMode) => !prevMode);
+    setError(null);
+    setSuccessMessage(null);
   };
 
   return (
     <section className="mx-auto my-12 w-11/12 max-w-md rounded-lg bg-white shadow-lg p-6 text-center">
+      <h1 className="text-2xl font-bold text-blue-800 mb-6">
+        {isLogin ? "Login" : "Create Account"}
+      </h1>
+      
+      {error && (
+        <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+
+      {successMessage && (
+        <div className="mb-4 p-2 bg-green-100 text-green-700 rounded border border-green-400">
+          {successMessage}
+        </div>
+      )}
+
       <form onSubmit={submitHandler}>
         {/* Email Input */}
         <div className="relative mb-4">
@@ -90,7 +151,6 @@ const AuthForm: React.FC = () => {
           <input
             type="email"
             id="email"
-            name="username"
             required
             ref={emailInputRef}
             className="w-full bg-blue-50 text-black rounded-lg p-2 pl-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-800"
@@ -110,12 +170,11 @@ const AuthForm: React.FC = () => {
               <input
                 type="text"
                 id="firstName"
+                required
                 ref={firstNameInputRef}
                 className="w-full bg-blue-50 text-black rounded-lg p-2 pl-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-800"
-                required
               />
             </div>
-
             <div className="relative mb-4">
               <label
                 htmlFor="lastName"
@@ -126,9 +185,9 @@ const AuthForm: React.FC = () => {
               <input
                 type="text"
                 id="lastName"
+                required
                 ref={lastNameInputRef}
                 className="w-full bg-blue-50 text-black rounded-lg p-2 pl-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-800"
-                required
               />
             </div>
           </>
@@ -142,25 +201,25 @@ const AuthForm: React.FC = () => {
           >
             Password
           </label>
-          <div className="flex items-center">
+          <div className="relative">
             <input
               type={showPasswords ? "text" : "password"}
               id="password"
-              name="password"
               required
               ref={passwordInputRef}
-              className="w-full bg-blue-50 text-black rounded-lg p-2 pl-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-800"
+              className="w-full bg-blue-50 text-black rounded-lg p-2 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-800"
             />
-            <div
-              className="absolute right-4 cursor-pointer text-blue-800"
+            <button
+              type="button"
               onClick={togglePasswordVisibility}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
             >
               <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
-            </div>
+            </button>
           </div>
         </div>
 
-        {/* Confirm Password Input (Only for Register) */}
+        {/* Confirm Password (Only for Register) */}
         {!isLogin && (
           <div className="relative mb-4">
             <label
@@ -169,21 +228,21 @@ const AuthForm: React.FC = () => {
             >
               Confirm Password
             </label>
-            <div className="flex items-center">
+            <div className="relative">
               <input
                 type={showPasswords ? "text" : "password"}
                 id="confirmPassword"
-                name="confirmPassword"
                 required
                 ref={confirmPasswordInputRef}
-                className="w-full bg-blue-50 text-black rounded-lg p-2 pl-4 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-800"
+                className="w-full bg-blue-50 text-black rounded-lg p-2 pl-4 pr-10 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-800"
               />
-              <div
-                className="absolute right-4 cursor-pointer text-blue-800"
+              <button
+                type="button"
                 onClick={togglePasswordVisibility}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
               >
                 <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
-              </div>
+              </button>
             </div>
           </div>
         )}
@@ -192,21 +251,23 @@ const AuthForm: React.FC = () => {
         <div className="mt-6">
           <button
             type="submit"
-            className="w-full bg-blue-800 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
+            className="w-full bg-blue-800 text-white py-2 px-4 rounded-lg hover:bg-blue-900 transition-colors"
           >
-            {isLogin ? "Login" : "Register"}
+            {isLogin ? "Login" : "Create Account"}
           </button>
         </div>
       </form>
 
-      {/* Toggle Button */}
+      {/* Toggle Auth Mode Button */}
       <div className="mt-4">
         <button
           type="button"
-          className="text-blue-800 underline hover:text-blue-700 transition duration-200"
+          className="text-blue-800 hover:underline"
           onClick={toggleAuthMode}
         >
-          {isLogin ? "Don't have an account yet?" : "Already have an account?"}
+          {isLogin
+            ? "Create new account"
+            : "Login with existing account"}
         </button>
       </div>
     </section>

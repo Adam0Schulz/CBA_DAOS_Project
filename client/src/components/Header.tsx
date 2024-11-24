@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Header: React.FC = () => {
-  const isLoggedIn = false; // Replace with actual login status logic
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 w-full flex justify-between items-center text-white p-4 h-12 pl-10 pr-10">
@@ -28,15 +29,16 @@ const Header: React.FC = () => {
             Profile
           </button>
         </Link>
-        {isLoggedIn ? (
-          <Link to="/logout">
-            <button className="text-lg text-blue-800 bg-white hover:bg-blue-700 px-4 py-2 rounded">
-              Logout
-            </button>
-          </Link>
+        {isAuthenticated ? (
+          <button 
+            onClick={logout}
+            className="text-lg text-blue-800 bg-white hover:bg-red-100 px-4 py-2 rounded"
+          >
+            Logout
+          </button>
         ) : (
           <Link to="/login">
-            <button className="text-lg text-blue-800 bg-white hover:bg-gray-500 hover:text-white px-4 py-2 rounded">
+            <button className="text-lg text-blue-800 bg-white hover:bg-gray-100 px-4 py-2 rounded">
               Login
             </button>
           </Link>

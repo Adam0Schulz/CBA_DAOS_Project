@@ -3,7 +3,7 @@ import AuthForm from "../components/AuthForm/AuthForm";
 
 const LoginPage: React.FC = () => {
   return (
-    <main>
+    <main className="flex flex-col items-center justify-center min-h-screen">
       <AuthForm />
     </main>
   );

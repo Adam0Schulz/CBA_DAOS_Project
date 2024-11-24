@@ -13,11 +13,22 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/passport-jwt": "^4.0.1",
     "concurrently": "^9.0.1",
     "cross-env": "^7.0.3",
     "prettier": "3.3.3"
   },
   "dependencies": {
-    "mongoose": "^8.8.1"
+    "@nestjs/config": "^3.3.0",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/passport": "^10.0.3",
+    "bcrypt": "^5.1.1",
+    "express-session": "^1.18.1",
+    "mongoose": "^8.8.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
+    "passport-session": "^1.0.2"
   }
 }

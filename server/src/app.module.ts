@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { EnsemblesModule } from './ensembles/ensembles.module';
 import { DataSeederService } from './data/seed.service';
 import { UsersController } from './users/users.controller';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UsersController } from './users/users.controller';
     DatabaseModule,
     UsersModule,
     EnsemblesModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, DataSeederService],

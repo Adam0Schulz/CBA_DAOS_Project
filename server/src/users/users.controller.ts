@@ -1,5 +1,3 @@
-// users.controller.ts
-
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserCore } from '@packages/types';
@@ -13,9 +11,4 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-  @Post("/register")
-  create(@Body() data: UserCore) {
-    // TODO check if user exists
-    return this.usersService.createUser(data);
-  }
 }
