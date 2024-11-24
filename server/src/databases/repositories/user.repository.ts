@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from '@packages/types';
+import { User, UserCore } from '@packages/types';
 
 @Injectable()
 export class UserRepository {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
 
-  async createUser(user: {
-    name: string;
-    email: string;
-    password: string;
-  }): Promise<User> {
-    const newUser = new this.userModel(user);
+  async createUser(user: UserCore): Promise<User> {
+    const modUser = {...user, createdAt: new Date(), lastLoggedIn: null};
+    const newUser = new this.userModel(modUser);
     return await newUser.save();
   }
 
@@ -22,6 +19,10 @@ export class UserRepository {
 
   async findUserById(id: string): Promise<User | null> {
     return await this.userModel.findById(id).exec();
+  }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.userModel.findOne({ email }).exec();
   }
 
   async updateUser(

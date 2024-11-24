@@ -1,7 +1,6 @@
-// users.controller.ts
-
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { UserCore } from '@packages/types';
 
 @Controller('users') // This defines the route prefix
 export class UsersController {
@@ -11,4 +10,5 @@ export class UsersController {
   findAll() {
     return this.usersService.getAllUsers();
   }
+
 }
