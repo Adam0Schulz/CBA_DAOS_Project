@@ -1,0 +1,39 @@
+import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { EnsemblesService } from './ensembles.service';
+import { EnsembleCore } from '@packages/types';
+
+@Controller('ensembles')
+export class EnsemblesController {
+  constructor(private readonly ensemblesService: EnsemblesService) {}
+
+  @Get()
+  async getAllEnsembles() {
+    return this.ensemblesService.getAllEnsembles();
+  }
+
+  @Post()
+  async createEnsemble(@Body() data: Omit<EnsembleCore, 'members'>) {
+    return this.ensemblesService.createEnsemble({
+      ...data,
+      members: [data.createdBy], // Add creator as first member
+    });
+  }
+
+  @Get(':id')
+  async getEnsembleById(@Param('id') id: string) {
+    return this.ensemblesService.getEnsembleById(id);
+  }
+
+  @Put(':id')
+  async updateEnsemble(
+    @Param('id') id: string,
+    @Body() updateData: Partial<EnsembleCore>,
+  ) {
+    return this.ensemblesService.updateEnsemble(id, updateData);
+  }
+
+  @Delete(':id')
+  async deleteEnsemble(@Param('id') id: string) {
+    return this.ensemblesService.deleteEnsemble(id);
+  }
+}
