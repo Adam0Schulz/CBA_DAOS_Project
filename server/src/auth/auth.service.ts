@@ -31,7 +31,9 @@ export class AuthService {
       email: user.email, 
       sub: user.id || user._id,
       firstName: user.firstName,
-      lastName: user.lastName
+      lastName: user.lastName,
+      createdAt: user.createdAt.toISOString(),
+
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -39,20 +41,19 @@ export class AuthService {
         id: user.id || user._id,
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        createdAt: user.createdAt.toISOString(),
       }
     };
   }
 
   async register(userData: UserCore) {
     try {
-      // Check if user already exists
       const existingUser = await this.usersService.findOneByEmail(userData.email);
       if (existingUser) {
         throw new ConflictException('Email already registered');
       }
 
-      // Validate input
       if (!userData.email || !userData.password || !userData.firstName || !userData.lastName) {
         throw new BadRequestException('All fields are required');
       }
