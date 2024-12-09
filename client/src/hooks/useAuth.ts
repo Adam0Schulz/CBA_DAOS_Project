@@ -6,6 +6,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
+  createdAt: string;
 }
 
 export const useAuth = () => {
@@ -16,12 +17,20 @@ export const useAuth = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-    
     if (token && storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+    
+      if (!parsedUser.createdAt) {
+        console.warn('createdAt is missing or invalid');
+      } else {
+        parsedUser.createdAt = new Date(parsedUser.createdAt); 
+      }
+  
       setIsAuthenticated(true);
-      setUser(JSON.parse(storedUser));
+      setUser(parsedUser);
     }
   }, []);
+  
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -30,6 +39,5 @@ export const useAuth = () => {
     setUser(null);
     navigate('/login');
   };
-
   return { isAuthenticated, user, logout };
 };

@@ -15,7 +15,7 @@ export class EnsemblesController {
   async createEnsemble(@Body() data: Omit<EnsembleCore, 'members'>) {
     return this.ensemblesService.createEnsemble({
       ...data,
-      members: [data.createdBy], // Add creator as first member
+      members: [data.createdBy], 
     });
   }
 
