@@ -5,7 +5,7 @@ import { EnsembleCore } from "@packages/types";
 import { format } from "date-fns";
 
 const ProfilePage: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [userEnsembles, setUserEnsembles] = useState<EnsembleCore[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -77,12 +77,6 @@ const ProfilePage: React.FC = () => {
       <div className="flex justify-between px-6 py-4 bg-gray-50">
         <button className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition">
           Edit Profile
-        </button>
-        <button
-          onClick={logout}
-          className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition"
-        >
-          Logout
         </button>
       </div>
 

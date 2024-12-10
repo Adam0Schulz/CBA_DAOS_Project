@@ -24,4 +24,7 @@ export class EnsemblesService {
   async deleteEnsemble(id: string) {
     return this.ensembleRepository.deleteEnsemble(id);
   }
+  async getEnsemblesByUser(userId: string) {
+    return this.ensembleRepository.findByUserMembership(userId);
+  }
 }

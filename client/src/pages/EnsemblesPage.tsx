@@ -6,30 +6,45 @@ import { EnsembleCore } from "@packages/types";
 import { ensemblesService } from "@/services/ensembles.service";
 
 const EnsemblePage: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [ensembles, setEnsembles] = useState<EnsembleCore[]>([]);
+  const [filteredEnsembles, setFilteredEnsembles] = useState<EnsembleCore[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterType, setFilterType] = useState<"all" | "myEnsembles" | "others">("all");
   const { user } = useAuth();
 
   useEffect(() => {
     fetchEnsembles();
   }, []);
 
+  useEffect(() => {
+    // Filter logic
+    let filtered = ensembles;
+
+    if (filterType === "myEnsembles" && user) {
+      filtered = ensembles.filter((ensemble) => ensemble.members.includes(user.id));
+    } else if (filterType === "others" && user) {
+      filtered = ensembles.filter((ensemble) => !ensemble.members.includes(user.id));
+    }
+
+    if (searchQuery) {
+      filtered = filtered.filter((ensemble) =>
+        ensemble.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFilteredEnsembles(filtered);
+  }, [ensembles, searchQuery, filterType, user]);
+
   const fetchEnsembles = async () => {
     try {
       const data = await ensemblesService.getAllEnsembles();
-      const formattedEnsembles = data.map(ensemble => ({
-        _id: ensemble._id,
-        name: ensemble.name,
-        description: ensemble.description,
-        createdBy: ensemble.createdBy,
-        members: ensemble.members
-      }));
-      setEnsembles(formattedEnsembles);
+      setEnsembles(data);
       setError(null);
     } catch (err) {
-      setError('Failed to fetch ensembles');
+      setError("Failed to fetch ensembles");
     } finally {
       setIsLoading(false);
     }
@@ -39,11 +54,7 @@ const EnsemblePage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCreateEnsemble = async (data: Omit<EnsembleCore, 'members'>) => {
+  const handleCreateEnsemble = async (data: Omit<EnsembleCore, "members">) => {
     try {
       await ensemblesService.createEnsemble(data);
       await fetchEnsembles();
@@ -53,11 +64,14 @@ const EnsemblePage: React.FC = () => {
     }
   };
 
-  const handleJoinEnsemble = async (_id: string) => {
+  const handleJoinEnsemble = async (ensembleId: string) => {
+    if (!user) return;
+    const ensemble = ensembles.find((e) => e._id === ensembleId);
+    if (!ensemble) return;
+
     try {
-      if (!user) return;
-      await ensemblesService.updateEnsemble(_id, {
-        members: [...(ensembles.find(e => e._id === _id)?.members || []), user.id]
+      await ensemblesService.updateEnsemble(ensembleId, {
+        members: [...ensemble.members, user.id],
       });
       await fetchEnsembles();
     } catch (error) {
@@ -65,14 +79,14 @@ const EnsemblePage: React.FC = () => {
     }
   };
 
-  const handleLeaveEnsemble = async (_id: string) => {
+  const handleLeaveEnsemble = async (ensembleId: string) => {
+    if (!user) return;
+    const ensemble = ensembles.find((e) => e._id === ensembleId);
+    if (!ensemble) return;
+
     try {
-      if (!user) return;
-      const ensemble = ensembles.find(e => e._id === _id);
-      if (!ensemble) return;
-      
-      await ensemblesService.updateEnsemble(_id, {
-        members: ensemble.members.filter(memberId => memberId !== user.id)
+      await ensemblesService.updateEnsemble(ensembleId, {
+        members: ensemble.members.filter((memberId) => memberId !== user.id),
       });
       await fetchEnsembles();
     } catch (error) {
@@ -80,18 +94,20 @@ const EnsemblePage: React.FC = () => {
     }
   };
 
-  const handleDeleteEnsemble = async (_id: string) => {
+  const handleDeleteEnsemble = async (ensembleId: string) => {
     try {
-      await ensemblesService.deleteEnsemble(_id);
+      await ensemblesService.deleteEnsemble(ensembleId);
       await fetchEnsembles();
     } catch (error) {
       console.error("Error deleting ensemble:", error);
     }
   };
 
+  const handleModalClose = () => setIsModalOpen(false);
+
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-50">
+      <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -99,7 +115,7 @@ const EnsemblePage: React.FC = () => {
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-screen bg-gray-50">
+      <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded-lg shadow-sm">
           <p className="font-medium">{error}</p>
         </div>
@@ -107,47 +123,54 @@ const EnsemblePage: React.FC = () => {
     );
   }
 
-  if (!user) {
-    return (
-      <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-        <div className="bg-white p-8 rounded-lg shadow-md text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome to Ensembles</h2>
-          <p className="text-lg text-gray-600">Please log in to view and manage ensembles.</p>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <>
       <main className="min-h-screen bg-gray-50 py-8 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">Music Ensembles</h1>
-            <p className="text-gray-600">Welcome, {user.firstName}!</p>
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-6">Music Ensembles</h1>
+
+            <div className="flex flex-wrap gap-4 mb-4">
+              <input
+                type="text"
+                placeholder="Search ensembles..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
+              />
+
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value as any)}
+                className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="all">All Ensembles</option>
+                <option value="myEnsembles">My Ensembles</option>
+                <option value="others">Other Ensembles</option>
+              </select>
+
+              <button
+                onClick={handleAddEnsemble}
+                className="w-full sm:w-auto bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition-colors"
+              >
+                Add New Ensemble
+              </button>
+            </div>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            <EnsembleCard
-              name=""
-              description=""
-              isAddCard={true}
-              onAdd={handleAddEnsemble}
-            />
-            {ensembles
-              .filter((ensemble): ensemble is EnsembleCore & { _id: string } => ensemble._id !== undefined)
-              .map((ensemble) => (
-                <EnsembleCard
-                  key={ensemble._id}
-                  name={ensemble.name}
-                  description={ensemble.description}
-                  onJoin={() => handleJoinEnsemble(ensemble._id)}
-                  onLeave={() => handleLeaveEnsemble(ensemble._id)}
-                  onDelete={() => handleDeleteEnsemble(ensemble._id)}
-                  isCreator={ensemble.createdBy === user.id}
-                  isMember={ensemble.members.includes(user.id)}
-                />
-              ))}
+            {filteredEnsembles.map((ensemble) => (
+              <EnsembleCard
+                key={ensemble._id}
+                name={ensemble.name}
+                description={ensemble.description}
+                onJoin={() => handleJoinEnsemble(ensemble._id || "")}
+                onLeave={() => handleLeaveEnsemble(ensemble._id || "")}
+                onDelete={() => handleDeleteEnsemble(ensemble._id || "")}
+                isCreator={ensemble.createdBy === user?.id}
+                isMember={ensemble.members.includes(user?.id || "")}
+              />
+            ))}
           </div>
         </div>
       </main>
@@ -156,7 +179,7 @@ const EnsemblePage: React.FC = () => {
         isOpen={isModalOpen}
         onClose={handleModalClose}
         onSubmit={handleCreateEnsemble}
-        userId={user.id}
+        userId={user?.id || ""}
       />
     </>
   );

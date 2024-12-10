@@ -10,7 +10,10 @@ export class EnsemblesController {
   async getAllEnsembles() {
     return this.ensemblesService.getAllEnsembles();
   }
-
+  @Get('user/:userId')
+  async getEnsemblesByUser(@Param('userId') userId: string) {
+    return this.ensemblesService.getEnsemblesByUser(userId);
+  }
   @Post()
   async createEnsemble(@Body() data: Omit<EnsembleCore, 'members'>) {
     return this.ensemblesService.createEnsemble({
