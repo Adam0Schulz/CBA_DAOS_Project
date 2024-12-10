@@ -34,4 +34,7 @@ export class EnsembleRepository {
   async deleteEnsemble(id: string): Promise<Ensemble | null> {
     return this.ensembleModel.findByIdAndDelete(id).exec();
   }
+  async findByUserMembership(userId: string): Promise<Ensemble[]> {
+    return this.ensembleModel.find({ members: userId }).exec();
+  }
 }
