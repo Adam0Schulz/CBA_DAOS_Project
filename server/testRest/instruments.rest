@@ -1,0 +1,30 @@
+### Variables
+@baseUrl = http://localhost:5000
+@instrumentId = 675bf2ed979320c15d93c3bc
+
+### Get all instruments
+GET {{baseUrl}}/instruments
+
+### Get instrument by ID
+GET {{baseUrl}}/instruments/{{instrumentId}}
+
+### Create new instrument
+POST {{baseUrl}}/instruments
+Content-Type: application/json
+
+{
+    "name": "Saxophone"
+}
+
+### Update instrument
+PUT {{baseUrl}}/instruments/{{instrumentId}}
+Content-Type: application/json
+
+{
+    "name": "Alto Saxophone"
+}
+
+### Delete instrument
+DELETE {{baseUrl}}/instruments/{{instrumentId}}
+
+

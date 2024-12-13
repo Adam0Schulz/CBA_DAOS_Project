@@ -8,6 +8,7 @@ import { EnsemblesModule } from './ensembles/ensembles.module';
 import { DataSeederService } from './data/seed.service';
 import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
+import { InstrumentModule } from './instruments/instrument.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     EnsemblesModule,
     AuthModule,
+    InstrumentModule,
   ],
   controllers: [AppController],
   providers: [AppService, DataSeederService],
