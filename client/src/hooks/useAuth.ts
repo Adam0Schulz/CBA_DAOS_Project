@@ -7,6 +7,9 @@ interface User {
   firstName: string;
   lastName: string;
   createdAt: string;
+  instrumentId?: string;
+  applicationId?: string;
+  isOpenToWork?: boolean;
 }
 
 export const useAuth = () => {
@@ -30,7 +33,6 @@ export const useAuth = () => {
       setUser(parsedUser);
     }
   }, []);
-  
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -39,5 +41,5 @@ export const useAuth = () => {
     setUser(null);
     navigate('/login');
   };
-  return { isAuthenticated, user, logout };
+  return { isAuthenticated, user, logout, setUser };
 };

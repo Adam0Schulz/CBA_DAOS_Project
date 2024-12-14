@@ -4,9 +4,12 @@ export interface User extends Document {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
-  createdAt: Date;
   lastLoggedInAt: Date | null;
+  instrumentId?: string;
+  applicationId?: string;
+  isOpenToWork?: boolean;
+  address?: string;
+  description?: string;
 }
 
 export interface UserCore {
@@ -14,5 +17,13 @@ export interface UserCore {
   lastName: string;
   email: string;
   password: string;
+  isOpenToWork?: boolean; 
 }
 
+
+export interface UserDetails {
+  _id: string;
+  userId: string;
+  address: string;
+  description: string;
+}

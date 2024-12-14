@@ -1,6 +1,6 @@
-import { Schema } from 'mongoose';
+import { Schema, Types, Document } from 'mongoose';
 
-export interface Instrument {
+export interface Instrument extends Document {
   name: string;
 }
 

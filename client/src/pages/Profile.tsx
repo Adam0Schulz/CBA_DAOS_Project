@@ -1,24 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { ensemblesService } from "@/services/ensembles.service";
+import { instrumentsService } from "@/services/instruments.service";
 import { EnsembleCore } from "@packages/types";
 import { format } from "date-fns";
+import EditUserProfile from "@/components/EditUserProfile/EditUserProfile";
+import type { Instrument } from "@/services/instruments.service";
 
 const ProfilePage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [userEnsembles, setUserEnsembles] = useState<EnsembleCore[]>([]);
+  const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
-      fetchUserEnsembles(user.id);
+       console.log(user);
+      Promise.all([
+        fetchUserEnsembles(user.id),
+        fetchInstruments()
+
+       
+      ]);
     }
   }, [user]);
 
   const fetchUserEnsembles = async (userId: string) => {
     try {
-      setIsLoading(true);
       const allEnsembles = await ensemblesService.getAllEnsembles();
       const filteredEnsembles = allEnsembles.filter((ensemble) =>
         ensemble.members.includes(userId)
@@ -31,6 +41,21 @@ const ProfilePage: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const fetchInstruments = async () => {
+    try {
+      const allInstruments = await instrumentsService.getAllInstruments();
+      setInstruments(allInstruments);
+    } catch (err) {
+      console.error("Failed to load instruments:", err);
+    }
+  };
+
+  const getCurrentInstrumentName = () => {
+    if (!user?.instrumentId) return "Not selected";
+    const instrument = instruments.find((i) => i._id === user.instrumentId);
+    return instrument ? instrument.name : "Unknown instrument";
   };
 
   if (!user) {
@@ -67,36 +92,62 @@ const ProfilePage: React.FC = () => {
             <strong>Email:</strong> {user.email}
           </p>
           <p>
+            <strong>Instrument:</strong> {getCurrentInstrumentName()}
+          </p>
+          <p>
+            <strong>Available for Ensembles:</strong>{" "}
+            <span className={user.isOpenToWork ? "text-green-600" : "text-red-600"}>
+              {user.isOpenToWork ? "Yes" : "No"}
+            </span>
+          </p>
+          <p>
             <strong>Member Since:</strong>{" "}
             {user.createdAt ? format(new Date(user.createdAt), "MMMM d, yyyy") : "N/A"}
           </p>
         </div>
-      </div>
 
-      {/* Action Buttons */}
-      <div className="flex justify-between px-6 py-4 bg-gray-50">
-        <button className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition">
-          Edit Profile
-        </button>
+   
+
+        {/* Edit Profile Button */}
+        <div className="mt-6">
+          <button
+            onClick={() => setIsEditModalOpen(true)}
+            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Edit Profile
+          </button>
+        </div>
       </div>
 
       {/* My Ensembles Section */}
       <div className="px-6 py-4">
-        <h2 className="text-xl font-bold text-blue-900 mb-4">My Ensembles</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">My Ensembles</h2>
         {error && <p className="text-red-600">{error}</p>}
         {userEnsembles.length === 0 ? (
           <p className="text-gray-600">You haven't joined any ensembles yet.</p>
         ) : (
-          <ul className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {userEnsembles.map((ensemble) => (
-              <li key={ensemble._id} className="bg-gray-100 rounded-md shadow-sm p-4">
+              <div
+                key={ensemble._id}
+                className="border rounded-lg p-4 bg-gray-50"
+              >
                 <h3 className="text-lg font-semibold text-gray-900">{ensemble.name}</h3>
                 <p className="text-gray-600">{ensemble.description}</p>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
+
+      {/* Edit Profile Modal */}
+      {isEditModalOpen && (
+        <EditUserProfile
+          user={user}
+          setUser={setUser}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

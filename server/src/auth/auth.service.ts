@@ -9,7 +9,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email);
@@ -27,13 +27,15 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { 
-      email: user.email, 
+    const payload = {
+      email: user.email,
       sub: user.id || user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       createdAt: user.createdAt.toISOString(),
-
+      instrumentId: user.instrumentId,
+      applicationId: user.applicationId,
+      isOpenToWork: user.isOpenToWork
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -43,6 +45,9 @@ export class AuthService {
         firstName: user.firstName,
         lastName: user.lastName,
         createdAt: user.createdAt.toISOString(),
+        instrumentId: user.instrumentId,
+        applicationId: user.applicationId,
+        isOpenToWork: user.isOpenToWork
       }
     };
   }
@@ -66,6 +71,7 @@ export class AuthService {
       const userToCreate = {
         ...userData,
         password: hashedPassword,
+        isOpenToWork: false,
       };
       const newUser = await this.usersService.createUser(userToCreate);
       const { password, ...result } = newUser;

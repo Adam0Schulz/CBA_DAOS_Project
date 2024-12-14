@@ -12,8 +12,8 @@ export class DataSeederService {
   ) {}
 
   async seed() {
-    await this.seedUsers();
     await this.seedInstruments();
+    await this.seedUsers();
   }
 
   private async seedUsers() {
@@ -23,24 +23,33 @@ export class DataSeederService {
       return;
     }
 
+    // Get some instruments to assign to users
+    const instruments = await this.instrumentsService.getAllInstruments();
+    
     const dummyUsers = [
       {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john@example.com',
         password: 'password123',
+        instrumentId: instruments[0]?._id,
+        isOpenToWork: true,
       },
       {
         firstName: 'Jane',
         lastName: 'Doe',
         email: 'jane@example.com',
         password: 'password123',
+        instrumentId: instruments[1]?._id,
+        isOpenToWork: false,
       },
       {
         firstName: 'Thomas',
         lastName: 'Anderson',
         email: 'thomas@example.com',
         password: 'password123',
+        instrumentId: instruments[2]?._id,
+        isOpenToWork: true,
       },
     ];
 
