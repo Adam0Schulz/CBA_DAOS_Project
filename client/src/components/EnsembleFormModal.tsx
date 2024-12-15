@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { EnsembleCore } from "@packages/types";
+import { EnsembleIn} from "@packages/types";
 
 interface EnsembleFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: Omit<EnsembleCore, 'members'>) => void;
+  onSubmit: (data: Omit<EnsembleIn, 'positions'>) => void;
   userId: string;
 }
 
@@ -19,6 +19,7 @@ const EnsembleFormModal: React.FC<EnsembleFormModalProps> = ({
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    instrumentId: "1"
   });
 
   if (!isOpen) return null;
@@ -27,9 +28,9 @@ const EnsembleFormModal: React.FC<EnsembleFormModalProps> = ({
     e.preventDefault();
     onSubmit({
       ...formData,
-      createdBy: userId,
+      userId: userId
     });
-    setFormData({ name: "", description: "" }); // Reset form
+    setFormData({ name: "", description: "", instrumentId: "1" }); // Reset form
   };
 
   return (

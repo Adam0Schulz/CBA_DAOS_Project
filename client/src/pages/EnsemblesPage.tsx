@@ -24,9 +24,9 @@ const EnsemblePage: React.FC = () => {
     let filtered = ensembles;
 
     if (filterType === "myEnsembles" && user) {
-      filtered = ensembles.filter((ensemble) => ensemble.members.includes(user.id));
+      filtered = ensembles.filter((ensemble) => ensemble.positions.find(pos => pos.userId===user.id));
     } else if (filterType === "others" && user) {
-      filtered = ensembles.filter((ensemble) => !ensemble.members.includes(user.id));
+      filtered = ensembles.filter((ensemble) => !ensemble.positions.find(pos => pos.userId===user.id));
     }
 
     if (searchQuery) {
@@ -44,6 +44,7 @@ const EnsemblePage: React.FC = () => {
       setEnsembles(data);
       setError(null);
     } catch (err) {
+      console.error(err);
       setError("Failed to fetch ensembles");
     } finally {
       setIsLoading(false);
@@ -64,35 +65,35 @@ const EnsemblePage: React.FC = () => {
     }
   };
 
-  const handleJoinEnsemble = async (ensembleId: string) => {
-    if (!user) return;
-    const ensemble = ensembles.find((e) => e._id === ensembleId);
-    if (!ensemble) return;
+  // const handleJoinEnsemble = async (ensembleId: string) => {
+  //   if (!user) return;
+  //   const ensemble = ensembles.find((e) => e._id === ensembleId);
+  //   if (!ensemble) return;
+  //
+  //   try {
+  //     await ensemblesService.updateEnsemble(ensembleId, {
+  //       members: [...ensemble.members, user.id],
+  //     });
+  //     await fetchEnsembles();
+  //   } catch (error) {
+  //     console.error("Error joining ensemble:", error);
+  //   }
+  // };
 
-    try {
-      await ensemblesService.updateEnsemble(ensembleId, {
-        members: [...ensemble.members, user.id],
-      });
-      await fetchEnsembles();
-    } catch (error) {
-      console.error("Error joining ensemble:", error);
-    }
-  };
-
-  const handleLeaveEnsemble = async (ensembleId: string) => {
-    if (!user) return;
-    const ensemble = ensembles.find((e) => e._id === ensembleId);
-    if (!ensemble) return;
-
-    try {
-      await ensemblesService.updateEnsemble(ensembleId, {
-        members: ensemble.members.filter((memberId) => memberId !== user.id),
-      });
-      await fetchEnsembles();
-    } catch (error) {
-      console.error("Error leaving ensemble:", error);
-    }
-  };
+  // const handleLeaveEnsemble = async (ensembleId: string) => {
+  //   if (!user) return;
+  //   const ensemble = ensembles.find((e) => e._id === ensembleId);
+  //   if (!ensemble) return;
+  //
+  //   try {
+  //     await ensemblesService.updateEnsemble(ensembleId, {
+  //       members: ensemble.members.filter((memberId) => memberId !== user.id),
+  //     });
+  //     await fetchEnsembles();
+  //   } catch (error) {
+  //     console.error("Error leaving ensemble:", error);
+  //   }
+  // };
 
   const handleDeleteEnsemble = async (ensembleId: string) => {
     try {
@@ -141,7 +142,7 @@ const EnsemblePage: React.FC = () => {
 
               <select
                 value={filterType}
-                onChange={(e) => setFilterType(e.target.value as any)}
+                onChange={(e) => setFilterType(e.target.value as never)}
                 className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
               >
                 <option value="all">All Ensembles</option>
@@ -164,11 +165,11 @@ const EnsemblePage: React.FC = () => {
                 key={ensemble._id}
                 name={ensemble.name}
                 description={ensemble.description}
-                onJoin={() => handleJoinEnsemble(ensemble._id || "")}
-                onLeave={() => handleLeaveEnsemble(ensemble._id || "")}
+                // onJoin={() => handleJoinEnsemble(ensemble._id || "")}
+                // onLeave={() => handleLeaveEnsemble(ensemble._id || "")}
                 onDelete={() => handleDeleteEnsemble(ensemble._id || "")}
-                isCreator={ensemble.createdBy === user?.id}
-                isMember={ensemble.members.includes(user?.id || "")}
+                // isCreator={ensemble.createdBy === user?.id}
+                // isMember={ensemble.members.includes(user?.id || "")}
               />
             ))}
           </div>

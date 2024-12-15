@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Position } from '@packages/types';
+import {Position, PositionCore} from '@packages/types';
 
 @Injectable()
 export class PositionRepository {
@@ -13,7 +13,7 @@ export class PositionRepository {
     return this.PositionModel.find().exec();
   }
 
-  async createPosition(data: any): Promise<Position> {
+  async createPosition(data: PositionCore): Promise<Position> {
     const newPosition = new this.PositionModel(data);
     return newPosition.save();
   }

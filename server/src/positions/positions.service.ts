@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PositionRepository } from '../databases/repositories/position.repository';
+import {PositionCore} from "@packages/types";
 
 @Injectable()
 export class PositionsService {
@@ -9,7 +10,7 @@ export class PositionsService {
     return this.positionRepository.findAll();
   }
 
-  async createPosition(data: any) {
+  async createPosition(data: PositionCore) {
     return this.positionRepository.createPosition(data);
   }
 

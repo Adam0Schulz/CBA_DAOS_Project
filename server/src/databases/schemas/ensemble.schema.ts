@@ -1,5 +1,5 @@
 import { Ensemble } from '@packages/types';
-import { Schema, Document, Types } from 'mongoose';
+import { Schema} from 'mongoose';
 
 export const EnsembleSchema = new Schema<Ensemble>({
   name: { type: String, required: true },
@@ -13,5 +13,5 @@ export const EnsembleSchema = new Schema<Ensemble>({
 EnsembleSchema.virtual('positions', {
   ref: 'Position',
   localField: '_id',
-  foreignField: 'ensemble_id'
+  foreignField: 'ensembleId'
 });

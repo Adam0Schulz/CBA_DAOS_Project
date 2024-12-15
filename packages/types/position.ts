@@ -1,13 +1,15 @@
 import { Document, Types } from "mongoose";
-import { User } from "./user";
-import { Ensemble } from "./ensemble";
-
 
 export interface Position extends Document {
-    user: Types.ObjectId | User;
-    ensemble: Types.ObjectId | Ensemble;
-    // TODO:
-    // instrument: Types.ObjectId | Instrument;
+    userId?: Types.ObjectId;
+    ensembleId: Types.ObjectId;
+    //TODO: implement instrumentId for reals
+    instrumentId: string;
     isOwner: boolean
-
+}
+export interface PositionCore {
+    userId?: string,
+    ensembleId: string,
+    instrumentId: string,
+    isOwner: boolean
 }

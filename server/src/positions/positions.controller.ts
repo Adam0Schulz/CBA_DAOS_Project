@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { PositionsService } from './positions.service';
-import { Position } from '@packages/types';
+import {Position, PositionCore} from '@packages/types';
 
 @Controller('positions')
 export class PositionsController {
@@ -15,10 +15,8 @@ export class PositionsController {
   //   return this.PositonssService.getPositonssByUser(userId);
   // }
   @Post()
-  async createPositions(@Body() data: Position) {
-    return this.PositionsService.createPosition({
-      ...data,
-    });
+  async createPositions(@Body() data: PositionCore) {
+    return this.PositionsService.createPosition(data);
   }
 
   @Get(':id')

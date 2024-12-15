@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Ensemble } from '@packages/types';
+import {Ensemble, EnsembleCore} from '@packages/types';
 
 @Injectable()
 export class EnsembleRepository {
@@ -15,13 +15,13 @@ export class EnsembleRepository {
     return ensembles;
   }
 
-  async createEnsemble(data: any): Promise<Ensemble> {
+  async createEnsemble(data: EnsembleCore): Promise<Ensemble> {
     const newEnsemble = new this.ensembleModel(data);
     return newEnsemble.save();
   }
 
   async findEnsembleById(id: string): Promise<Ensemble | null> {
-    return this.ensembleModel.findById(id).exec();
+    return this.ensembleModel.findById(id).populate('positions').exec();
   }
 
   async updateEnsemble(

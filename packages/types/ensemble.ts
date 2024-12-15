@@ -1,5 +1,5 @@
 import { Document, Types } from "mongoose";
-import { Position } from "./position";
+import {Position, PositionCore} from "./position";
 
 export interface Ensemble extends Document {
   name: string;
@@ -11,5 +11,9 @@ export interface EnsembleCore {
   _id?: string;
   name: string;
   description: string;
-  positions: string[];
+  positions: PositionCore[];
+}
+export interface EnsembleIn extends EnsembleCore{
+  userId: string;
+  instrumentId: string;
 }
