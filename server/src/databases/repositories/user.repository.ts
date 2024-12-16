@@ -8,7 +8,7 @@ export class UserRepository {
   constructor(@InjectModel('User') private userModel: Model<User>) {}
 
   async createUser(user: UserCore): Promise<User> {
-    const modUser = {...user, createdAt: new Date(), lastLoggedIn: null};
+    const modUser = {...user, createdAt: new Date()};
     const newUser = new this.userModel(modUser);
     return await newUser.save();
   }

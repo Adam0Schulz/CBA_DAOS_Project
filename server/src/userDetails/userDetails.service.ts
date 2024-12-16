@@ -1,28 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { UserDetailsRepository } from '../databases/repositories/userDetails.repository';
-import { UserDetails } from '../databases/schemas/userDetails.schema';
+import { UserDetailRepository } from '../databases/repositories/userDetail.repository';
+import { UserDetail } from '../databases/schemas/userDetail.schema';
 
 @Injectable()
 export class UserDetailsService {
-  constructor(private readonly userDetailsRepository: UserDetailsRepository) {}
+  constructor(private readonly userDetailRepository: UserDetailRepository) {}
 
-  async createUserDetails(userId: Types.ObjectId, data: Partial<UserDetails>) {
-    return this.userDetailsRepository.createUserDetails({
-      ...data,
-      userId,
-    });
+  async createUserDetail(data: Partial<UserDetail>) {
+    return this.userDetailRepository.createUserDetail(data);
   }
 
-  async getUserDetails(userId: Types.ObjectId) {
-    return this.userDetailsRepository.findByUserId(userId);
+  async getUserDetailByUserId(userId: Types.ObjectId) {
+    return this.userDetailRepository.findUserDetailByUserId(userId);
   }
 
-  async updateUserDetails(userId: Types.ObjectId, data: Partial<UserDetails>) {
-    return this.userDetailsRepository.updateUserDetails(userId, data);
+  async getUserDetailById(id: Types.ObjectId) {
+    return this.userDetailRepository.findUserDetailById(id);
   }
 
-  async deleteUserDetails(userId: Types.ObjectId) {
-    return this.userDetailsRepository.deleteUserDetails(userId);
+  async updateUserDetail(userId: Types.ObjectId, updateData: Partial<UserDetail>) {
+    return this.userDetailRepository.updateUserDetail(userId, updateData);
+  }
+
+  async deleteUserDetail(userId: Types.ObjectId) {
+    return this.userDetailRepository.deleteUserDetail(userId);
   }
 }

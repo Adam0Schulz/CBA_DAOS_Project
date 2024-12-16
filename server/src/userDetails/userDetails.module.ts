@@ -2,17 +2,17 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserDetailsController } from './userDetails.controller';
 import { UserDetailsService } from './userDetails.service';
-import { UserDetailsRepository } from '../databases/repositories/userDetails.repository';
-import { UserDetailsSchema } from '../databases/schemas/userDetails.schema';
+import { UserDetailRepository } from '../databases/repositories/userDetail.repository';
+import { UserDetailSchema } from '../databases/schemas/userDetail.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: 'UserDetails', schema: UserDetailsSchema },
+      { name: 'UserDetail', schema: UserDetailSchema },
     ]),
   ],
   controllers: [UserDetailsController],
-  providers: [UserDetailsService, UserDetailsRepository],
+  providers: [UserDetailsService, UserDetailRepository],
   exports: [UserDetailsService],
 })
 export class UserDetailsModule {}

@@ -1,6 +1,6 @@
 ### Variables
 @baseUrl = http://localhost:5000
-@instrumentId = 675bf2ed979320c15d93c3bc
+@instrumentId = 675bf1b7979320c15d93c39a
 
 ### Get all instruments
 GET {{baseUrl}}/instruments

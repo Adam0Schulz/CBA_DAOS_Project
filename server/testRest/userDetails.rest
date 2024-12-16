@@ -1,0 +1,37 @@
+### Variables
+@baseUrl = http://localhost:5000
+@userId = 67603229d67cb2d13a630884
+@instrumentId = 675bf1b7979320c15d93c39a
+@applicationId = 675bf1b7979320c15d93c39a
+
+### Create user detail
+POST {{baseUrl}}/userDetails/{{userId}}
+Content-Type: application/json
+
+{
+  "address": "123 Test Street",
+  "description": "Test user description",
+  "instrumentId": "{{instrumentId}}",
+  "applicationId": "{{applicationId}}",
+  "isOpenToWork": true,
+  "lastLoggedIn": null
+}
+
+### Get user detail by userId
+GET {{baseUrl}}/userDetails/{{userId}}
+
+### Update user detail
+PUT {{baseUrl}}/userDetails/{{userId}}
+Content-Type: application/json
+
+{
+  "address": "456 Updated Street",
+  "description": "Updated description",
+  "instrumentId": "{{instrumentId}}",
+  "applicationId": "{{applicationId}}",
+  "isOpenToWork": true,
+  "lastLoggedIn": "2024-12-16T13:00:00.000Z"
+}
+
+### Delete user detail
+DELETE {{baseUrl}}/userDetails/{{userId}}

@@ -1,4 +1,4 @@
-import { Schema, Types, Document } from 'mongoose';
+import { Schema, Document } from 'mongoose';
 
 export interface User extends Document {
   firstName: string;
@@ -6,10 +6,6 @@ export interface User extends Document {
   email: string;
   password: string;
   createdAt: Date;
-  lastLoggedInAt: Date;
-  instrumentId?: Types.ObjectId;
-  applicationId?: Types.ObjectId;
-  isOpenToWork: boolean;
 }
 
 export const UserSchema = new Schema<User>({
@@ -18,8 +14,4 @@ export const UserSchema = new Schema<User>({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
-  lastLoggedInAt: { type: Date },
-  instrumentId: { type: Schema.Types.ObjectId, ref: 'Instrument' },
-  applicationId: { type: Schema.Types.ObjectId, ref: 'Application' },
-  isOpenToWork: { type: Boolean, default: false },
 });

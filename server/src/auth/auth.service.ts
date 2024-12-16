@@ -3,12 +3,15 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User, UserCore } from '@packages/types';
 import * as bcrypt from 'bcrypt';
+import { UserDetailsService } from '../userDetails/userDetails.service';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly userDetailsService: UserDetailsService,
   ) { }
 
   async validateUser(email: string, password: string): Promise<any> {
@@ -27,15 +30,21 @@ export class AuthService {
   }
 
   async login(user: any) {
+    // Update last login time in user details
+    const userId = typeof user._id === 'string' ? new Types.ObjectId(user._id) : user._id;
+    const userDetail = await this.userDetailsService.getUserDetailByUserId(userId);
+    if (userDetail) {
+      await this.userDetailsService.updateUserDetail(userId, {
+        lastLoggedIn: new Date('2024-12-16T14:51:44+01:00')
+      });
+    }
+
     const payload = {
       email: user.email,
       sub: user.id || user._id,
       firstName: user.firstName,
       lastName: user.lastName,
-      createdAt: user.createdAt.toISOString(),
-      instrumentId: user.instrumentId,
-      applicationId: user.applicationId,
-      isOpenToWork: user.isOpenToWork
+      createdAt: user.createdAt.toISOString()
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -44,10 +53,7 @@ export class AuthService {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
-        createdAt: user.createdAt.toISOString(),
-        instrumentId: user.instrumentId,
-        applicationId: user.applicationId,
-        isOpenToWork: user.isOpenToWork
+        createdAt: user.createdAt.toISOString()
       }
     };
   }
@@ -70,12 +76,24 @@ export class AuthService {
       const hashedPassword = await this.hashPassword(userData.password);
       const userToCreate = {
         ...userData,
-        password: hashedPassword,
-        isOpenToWork: false,
+        password: hashedPassword
       };
       const newUser = await this.usersService.createUser(userToCreate);
-      const { password, ...result } = newUser;
-      return result;
+      
+      // Create user details for the new user
+      await this.userDetailsService.createUserDetail({
+        userId: new Types.ObjectId(newUser._id.toString()),
+        isOpenToWork: false,
+        instrumentId: null,
+        applicationId: null,
+        address: null,
+        description: null,
+        lastLoggedIn: null
+      });
+
+      return {
+        user: newUser
+      };
     } catch (error) {
       if (error.code === 11000) { // MongoDB duplicate key error
         throw new ConflictException('Email already registered');
