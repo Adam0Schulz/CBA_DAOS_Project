@@ -1,20 +1,17 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
 import { UserDetailsService } from './userDetails.service';
 import { UserDetail } from '../databases/schemas/userDetail.schema';
 import { Types } from 'mongoose';
 
-@Controller('userDetails')
+@Controller('user-details')
 export class UserDetailsController {
   constructor(private readonly userDetailsService: UserDetailsService) {}
 
-  @Post(':userId')
-  async createUserDetail(
-    @Param('userId') userId: string,
-    @Body() data: Partial<UserDetail>
-  ) {
+  @Post()
+  async createUserDetail(@Body() data: Partial<UserDetail>) {
     return this.userDetailsService.createUserDetail({
       ...data,
-      userId: new Types.ObjectId(userId),
+      userId: new Types.ObjectId(data.userId),
     });
   }
 
@@ -23,7 +20,7 @@ export class UserDetailsController {
     return this.userDetailsService.getUserDetailByUserId(new Types.ObjectId(userId));
   }
 
-  @Put(':userId')
+  @Patch(':userId')
   async updateUserDetail(
     @Param('userId') userId: string,
     @Body() updateData: Partial<UserDetail>

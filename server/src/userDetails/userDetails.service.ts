@@ -15,10 +15,6 @@ export class UserDetailsService {
     return this.userDetailRepository.findUserDetailByUserId(userId);
   }
 
-  async getUserDetailById(id: Types.ObjectId) {
-    return this.userDetailRepository.findUserDetailById(id);
-  }
-
   async updateUserDetail(userId: Types.ObjectId, updateData: Partial<UserDetail>) {
     return this.userDetailRepository.updateUserDetail(userId, updateData);
   }

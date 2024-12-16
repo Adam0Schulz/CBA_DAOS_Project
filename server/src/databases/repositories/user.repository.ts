@@ -20,7 +20,6 @@ export class UserRepository {
   async findUserById(id: string): Promise<User | null> {
     return await this.userModel.findById(id).exec();
   }
-
   async findOneByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
   }
