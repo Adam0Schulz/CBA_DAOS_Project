@@ -1,4 +1,4 @@
-import { EnsembleCore } from '@packages/types';
+import { EnsembleCore, EnsembleIn } from '@packages/types';
 
 const API_URL = 'http://localhost:3000/api';
 
@@ -26,7 +26,7 @@ export const ensemblesService = {
     }
   },
 
-  async createEnsemble(data: Omit<EnsembleCore, 'members'>): Promise<EnsembleCore> {
+  async createEnsemble(data: Omit<EnsembleIn, 'positions'>): Promise<EnsembleCore> {
     try {
       const response = await fetch(`${API_URL}/ensembles`, {
         method: 'POST',

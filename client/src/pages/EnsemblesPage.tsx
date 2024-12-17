@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import EnsembleCard from "@/components/EnsembleCards";
 import EnsembleFormModal from "@/components/EnsembleFormModal";
+import Switch from "@/components/Switch";
 import { useAuth } from "@/hooks/useAuth";
-import { EnsembleCore } from "@packages/types";
+import { EnsembleCore, EnsembleIn } from "@packages/types";
 import { ensemblesService } from "@/services/ensembles.service";
 
 const EnsemblePage: React.FC = () => {
@@ -13,6 +14,7 @@ const EnsemblePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "myEnsembles" | "others">("all");
+  const [showCompleteEnsembles, setShowCompleteEnsembles] = useState(true);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -29,6 +31,16 @@ const EnsemblePage: React.FC = () => {
       filtered = ensembles.filter((ensemble) => !ensemble.positions.find(pos => pos.userId===user.id));
     }
 
+    if (showCompleteEnsembles) {
+      filtered = filtered.filter((ensemble) => 
+        ensemble.positions.every(position => position.userId)
+      );
+    } else {
+      filtered = filtered.filter((ensemble) => 
+        ensemble.positions.some(position => !position.userId)
+      );
+    }
+
     if (searchQuery) {
       filtered = filtered.filter((ensemble) =>
         ensemble.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -36,7 +48,7 @@ const EnsemblePage: React.FC = () => {
     }
 
     setFilteredEnsembles(filtered);
-  }, [ensembles, searchQuery, filterType, user]);
+  }, [ensembles, searchQuery, filterType, showCompleteEnsembles, user]);
 
   const fetchEnsembles = async () => {
     try {
@@ -55,7 +67,7 @@ const EnsemblePage: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleCreateEnsemble = async (data: Omit<EnsembleCore, "members">) => {
+  const handleCreateEnsemble = async (data: Omit<EnsembleIn, "positions">) => {
     try {
       await ensemblesService.createEnsemble(data);
       await fetchEnsembles();
@@ -64,36 +76,6 @@ const EnsemblePage: React.FC = () => {
       console.error("Error creating ensemble:", error);
     }
   };
-
-  // const handleJoinEnsemble = async (ensembleId: string) => {
-  //   if (!user) return;
-  //   const ensemble = ensembles.find((e) => e._id === ensembleId);
-  //   if (!ensemble) return;
-  //
-  //   try {
-  //     await ensemblesService.updateEnsemble(ensembleId, {
-  //       members: [...ensemble.members, user.id],
-  //     });
-  //     await fetchEnsembles();
-  //   } catch (error) {
-  //     console.error("Error joining ensemble:", error);
-  //   }
-  // };
-
-  // const handleLeaveEnsemble = async (ensembleId: string) => {
-  //   if (!user) return;
-  //   const ensemble = ensembles.find((e) => e._id === ensembleId);
-  //   if (!ensemble) return;
-  //
-  //   try {
-  //     await ensemblesService.updateEnsemble(ensembleId, {
-  //       members: ensemble.members.filter((memberId) => memberId !== user.id),
-  //     });
-  //     await fetchEnsembles();
-  //   } catch (error) {
-  //     console.error("Error leaving ensemble:", error);
-  //   }
-  // };
 
   const handleDeleteEnsemble = async (ensembleId: string) => {
     try {
@@ -126,52 +108,66 @@ const EnsemblePage: React.FC = () => {
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50 py-8 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-6">Music Ensembles</h1>
+      <main className="min-h-screen bg-white pt-20">
+        {/* Filter Section */}
+        <div className="bg-white pt-16 pb-12 px-4 shadow-sm">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">Music Ensembles</h1>
+              <p className="text-gray-600 mb-6">{filteredEnsembles.length} result{filteredEnsembles.length !== 1 ? 's' : ''} found</p>
 
-            <div className="flex flex-wrap gap-4 mb-4">
-              <input
-                type="text"
-                placeholder="Search ensembles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
-              />
+              <div className="flex flex-wrap gap-4 mb-4">
+                <input
+                  type="text"
+                  placeholder="Search ensembles..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
+                />
 
-              <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value as never)}
-                className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="all">All Ensembles</option>
-                <option value="myEnsembles">My Ensembles</option>
-                <option value="others">Other Ensembles</option>
-              </select>
+                <select
+                  value={filterType}
+                  onChange={(e) => setFilterType(e.target.value as never)}
+                  className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
+                >
+                  <option value="all">All Ensembles</option>
+                  <option value="myEnsembles">My Ensembles</option>
+                  <option value="others">Other Ensembles</option>
+                </select>
 
-              <button
-                onClick={handleAddEnsemble}
-                className="w-full sm:w-auto bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition-colors"
-              >
-                Add New Ensemble
-              </button>
+                <div className="w-full sm:w-auto">
+                  <Switch
+                    isChecked={showCompleteEnsembles}
+                    onToggle={() => setShowCompleteEnsembles(!showCompleteEnsembles)}
+                    leftLabel="Incomplete"
+                    rightLabel="Complete"
+                  />
+                </div>
+
+                <button
+                  onClick={handleAddEnsemble}
+                  className="w-full sm:w-auto bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition-colors"
+                >
+                  Add New Ensemble
+                </button>
+              </div>
             </div>
           </div>
+        </div>
 
-          <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {filteredEnsembles.map((ensemble) => (
-              <EnsembleCard
-                key={ensemble._id}
-                name={ensemble.name}
-                description={ensemble.description}
-                // onJoin={() => handleJoinEnsemble(ensemble._id || "")}
-                // onLeave={() => handleLeaveEnsemble(ensemble._id || "")}
-                onDelete={() => handleDeleteEnsemble(ensemble._id || "")}
-                // isCreator={ensemble.createdBy === user?.id}
-                // isMember={ensemble.members.includes(user?.id || "")}
-              />
-            ))}
+        {/* Ensembles List Section */}
+        <div className="bg-[#F4F5F4] py-8 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {filteredEnsembles.map((ensemble) => (
+                <EnsembleCard
+                  key={ensemble._id}
+                  name={ensemble.name}
+                  description={ensemble.description}
+                  onDelete={() => handleDeleteEnsemble(ensemble._id || "")}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </main>
