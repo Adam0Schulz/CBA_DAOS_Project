@@ -2,13 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../databases/repositories/user.repository';
 import { UserCore } from '@packages/types';
 import { User } from '@packages/types';
-import { UserDetailRepository } from '../databases/repositories/userDetail.repository';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly userRepository: UserRepository,
-    private readonly userDetailRepository: UserDetailRepository 
+    private readonly userRepository: UserRepository
   ) {}
 
 
@@ -18,13 +16,6 @@ export class UsersService {
 
   async createUser(data: UserCore): Promise<User> {
     const user = await this.userRepository.createUser(data);
-
-    await this.userDetailRepository.createUserDetail({
-      userId: user._id, 
-      
-      isOpenToWork: false,
-    });
-  
     return user;
   }
 

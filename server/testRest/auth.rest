@@ -12,7 +12,7 @@ POST http://localhost:5000/auth/register
 Content-Type: application/json
 
 {
-    "email": "admin12@admin.com",
+    "email": "admin1222@admin2123.com",
     "password": "admin1234",
     "firstName": "Admin",
     "lastName": "Admin"
