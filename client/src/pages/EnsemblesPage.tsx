@@ -77,15 +77,6 @@ const EnsemblePage: React.FC = () => {
     }
   };
 
-  const handleDeleteEnsemble = async (ensembleId: string) => {
-    try {
-      await ensemblesService.deleteEnsemble(ensembleId);
-      await fetchEnsembles();
-    } catch (error) {
-      console.error("Error deleting ensemble:", error);
-    }
-  };
-
   const handleModalClose = () => setIsModalOpen(false);
 
   if (isLoading) {
@@ -162,9 +153,7 @@ const EnsemblePage: React.FC = () => {
               {filteredEnsembles.map((ensemble) => (
                 <EnsembleCard
                   key={ensemble._id}
-                  name={ensemble.name}
-                  description={ensemble.description}
-                  onDelete={() => handleDeleteEnsemble(ensemble._id || "")}
+                  ensemble={ensemble}
                 />
               ))}
             </div>

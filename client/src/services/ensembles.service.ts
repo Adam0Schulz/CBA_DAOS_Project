@@ -117,7 +117,7 @@ export const ensemblesService = {
           statusText: response.statusText,
           body: errorText,
         });
-        throw new Error(`Failed to fetch ensembles: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to fetch user ensembles: ${response.status} ${response.statusText}`);
       }
 
       return response.json();
@@ -126,4 +126,26 @@ export const ensemblesService = {
       throw error;
     }
   },
+  async getEnsembleById(id: string): Promise<EnsembleCore> {
+    try {
+      const response = await fetch(`${API_URL}/ensembles/${id}`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Fetch error details:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        throw new Error(`Failed to fetch ensemble: ${response.status} ${response.statusText}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Network or parsing error:', error);
+      throw error;
+    }
+  }
 };
