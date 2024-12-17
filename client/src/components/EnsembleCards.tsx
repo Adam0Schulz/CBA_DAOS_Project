@@ -26,7 +26,7 @@ const EnsembleCard: React.FC<EnsembleCardProps> = ({
     >
       <div>
         <div className="flex justify-between items-center">
-          <h3 className="text-xl font-bold text-blue-900 group-hover:text-red-600 transition-colors">
+          <h3 className="text-xl font-bold transition-colors group-hover:opacity-80" style={{ color: '#343B5D' }}>
             {ensemble.name}
           </h3>
           
@@ -70,7 +70,7 @@ const EnsembleCard: React.FC<EnsembleCardProps> = ({
       {/* Watermark Icon */}
       <FontAwesomeIcon 
         icon={faGuitar}
-        className="absolute -bottom-4 -right-4 text-gray-200 text-8xl transform rotate-12 scale-x-[-1] group-hover:text-gray-300 transition-colors"
+        className="absolute -bottom-4 -right-4 text-gray-200 text-8xl transform rotate-12 scale-x-[-1]"
       />
     </div>
   );

@@ -12,7 +12,8 @@ const Header: React.FC = () => {
         <div className="flex flex-col">
           <Link
             to="/"
-            className="text-3xl font-bold text-red-600 hover:text-red-700 transition duration-300"
+            className="text-3xl font-bold hover:opacity-90 transition duration-300"
+            style={{ color: '#BE1F2E' }}
           >
             Musik Samspil
           </Link>
@@ -24,25 +25,30 @@ const Header: React.FC = () => {
           <NavLink
             to="/ensembles"
             className={({ isActive }) =>
-              `text-lg text-blue-900 hover:text-blue-700 transition duration-300 ${
-                isActive ? 'border-b-2 border-blue-900' : ''
+              `text-lg hover:opacity-80 transition duration-300 ${
+                isActive ? 'border-b-2' : ''
               }`
             }
+            style={{ color: '#343B5D', borderColor: '#343B5D' }}
           >
             Ensembles
           </NavLink>
           <NavLink
             to="/musicians"
             className={({ isActive }) =>
-              `text-lg text-blue-900 hover:text-blue-700 transition duration-300 ${
-                isActive ? 'border-b-2 border-blue-900' : ''
+              `text-lg hover:opacity-80 transition duration-300 ${
+                isActive ? 'border-b-2' : ''
               }`
             }
+            style={{ color: '#343B5D', borderColor: '#343B5D' }}
           >
             Musicians
           </NavLink>
           <Link to="/profile">
-            <button className="text-lg bg-blue-900 text-white hover:bg-blue-800 px-6 py-2 rounded-md transition duration-300">
+            <button 
+              className="text-lg text-white px-6 py-2 rounded-md transition duration-300 hover:opacity-90"
+              style={{ backgroundColor: '#343B5D' }}
+            >
               Profile
             </button>
           </Link>

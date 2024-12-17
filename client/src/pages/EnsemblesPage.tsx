@@ -99,12 +99,12 @@ const EnsemblePage: React.FC = () => {
 
   return (
     <>
-      <main className="min-h-screen bg-white pt-20">
+      <main className="min-h-screen bg-white pt-20 flex flex-col">
         {/* Filter Section */}
         <div className="bg-white pt-16 pb-12 px-4 shadow-sm">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Music Ensembles</h1>
+              <h1 className="text-3xl font-bold mb-2" style={{ color: '#343B5D' }}>Music Ensembles</h1>
               <p className="text-gray-600 mb-6">{filteredEnsembles.length} result{filteredEnsembles.length !== 1 ? 's' : ''} found</p>
 
               <div className="flex flex-wrap gap-4 mb-4">
@@ -113,13 +113,15 @@ const EnsemblePage: React.FC = () => {
                   placeholder="Search ensembles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
+                  className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:outline-none"
+                  style={{ '--tw-ring-color': '#343B5D' } as React.CSSProperties}
                 />
 
                 <select
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value as never)}
-                  className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:outline-none"
+                  className="w-full sm:w-1/3 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring focus:outline-none"
+                  style={{ '--tw-ring-color': '#343B5D' } as React.CSSProperties}
                 >
                   <option value="all">All Ensembles</option>
                   <option value="myEnsembles">My Ensembles</option>
@@ -137,7 +139,8 @@ const EnsemblePage: React.FC = () => {
 
                 <button
                   onClick={handleAddEnsemble}
-                  className="w-full sm:w-auto bg-blue-500 text-white px-6 py-2 rounded-lg shadow hover:bg-blue-600 transition-colors"
+                  className="w-full sm:w-auto text-white px-6 py-2 rounded-lg shadow hover:opacity-90 transition-colors"
+                  style={{ backgroundColor: '#343B5D' }}
                 >
                   Add New Ensemble
                 </button>
@@ -147,7 +150,7 @@ const EnsemblePage: React.FC = () => {
         </div>
 
         {/* Ensembles List Section */}
-        <div className="bg-[#F4F5F4] py-8 px-4">
+        <div className="bg-[#F4F5F4] py-8 px-4 flex-grow">
           <div className="max-w-7xl mx-auto">
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {filteredEnsembles.map((ensemble) => (
