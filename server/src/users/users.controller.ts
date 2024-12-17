@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UserCore } from '@packages/types';
+import { User } from '@packages/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('users')
@@ -25,7 +25,7 @@ export class UsersController {
       throw new Error('User not found');
     }
     return {
-      id: user._id,
+      _id: user._id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
@@ -34,7 +34,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  async updateUserProfile(@Param('id') id: string, @Body() updateData: Partial<UserCore>) {
+  async updateUserProfile(@Param('id') id: string, @Body() updateData: Partial<User>) {
     return this.usersService.updateUserProfile(id, updateData);
   }
 }

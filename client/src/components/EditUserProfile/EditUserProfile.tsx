@@ -1,64 +1,49 @@
-import React, { useEffect, useState } from "react";
-import { User, UserDetail } from "@packages/types";
-import { userDetailsService } from "@/services/userDetails.service";
+import React, { useState } from "react";
+import { User } from "@packages/types";
 import EditProfileForm from "./EditProfileForm";
+import { userService } from "@/services/users.service";
 
 interface EditUserProfileProps {
   user: User;
+  setUser: (updatedUser: User) => void; 
   onClose: () => void;
-  onSave: (data: {
-    userData: Partial<User>;
-    userDetailsData: Partial<Omit<UserDetail, "_id" | "userId">>;
-  }) => void;
-  isSaving: boolean;
 }
 
-const EditUserProfile: React.FC<EditUserProfileProps> = ({
-  user,
-  onClose,
-  onSave,
-  isSaving,
-}) => {
-  const [userDetails, setUserDetails] = useState<UserDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+const EditUserProfile: React.FC<EditUserProfileProps> = ({ user, setUser, onClose }) => {
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
+  const handleSave = async (userData: Partial<User>) => {
+    setIsSaving(true);
+    setError(null);
 
-  const fetchUserDetails = async () => {
     try {
-      const data = await userDetailsService.getUserDetails(user.id);
-      setUserDetails(data);
+      const updatedUser = await userService.updateUser(user.id, userData);
+      setUser(updatedUser); 
+      alert("Profile updated successfully!");
+      onClose();
     } catch (error) {
-      console.error("Failed to fetch user details:", error);
+      console.error("Error updating user:", error);
+      setError("Failed to update user. Please try again.");
     } finally {
-      setLoading(false);
+      setIsSaving(false);
     }
   };
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full">
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-900">Edit Profile</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-500"
-            >
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-500">
               Close
             </button>
           </div>
 
-          <EditProfileForm
-            user={user}
-            userDetails={userDetails}
-            onSave={onSave}
-            isSaving={isSaving}
-          />
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+
+          <EditProfileForm user={user} onSave={handleSave} isSaving={isSaving} />
         </div>
       </div>
     </div>

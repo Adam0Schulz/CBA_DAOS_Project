@@ -1,35 +1,30 @@
-import { User } from '@packages/types';
-
 const API_URL = 'http://localhost:3000/api/users';
 
-export interface UpdateUserDto {
-  firstName?: string;
-  lastName?: string;
-  instrumentId?: string;
-  isOpenToWork?: boolean;
-  password?: string;
-}
-
 export const userService = {
-  async getUserProfile(userId: string): Promise<User> {
-    const response = await fetch(`${API_URL}/profile/${userId}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch user profile: ${response.statusText}`);
-    }
+  async getUserProfile(token: string) {
+    const response = await fetch(`${API_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error('Failed to fetch profile');
     return response.json();
   },
 
-  async updateUser(userId: string, data: UpdateUserDto): Promise<User> {
+  async updateUser(userId: string, updatedData: Partial<{ firstName: string; lastName: string; email: string }>) {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found. Please log in again.");
+
     const response = await fetch(`${API_URL}/${userId}`, {
-      method: 'PATCH',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      credentials: 'include',
-      body: JSON.stringify(data),
+      body: JSON.stringify(updatedData),
     });
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Update User Error:", errorText);
       throw new Error(`Failed to update user: ${response.statusText}`);
     }
 
