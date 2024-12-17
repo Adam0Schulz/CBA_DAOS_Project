@@ -147,5 +147,20 @@ export const ensemblesService = {
       console.error('Network or parsing error:', error);
       throw error;
     }
+  },
+
+  async sendPositionApplication(ensembleId: string, positionId: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_URL}/ensembles/${ensembleId}/positions/${positionId}/apply`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to send application');
+      }
+    } catch (error) {
+      console.error('Error sending application:', error);
+      throw error;
+    }
   }
 };
