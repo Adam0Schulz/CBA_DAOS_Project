@@ -1,3 +1,5 @@
+import { getAuthHeader } from '../utils/auth';
+
 const API_URL = 'http://localhost:3000/api';
 
 export interface UserDetails {
@@ -13,7 +15,9 @@ export const userDetailsService = {
   async getUserDetails(userId: string): Promise<UserDetails> {
     try {
       const response = await fetch(`${API_URL}/user-details/${userId}`, {
-        credentials: 'include',
+        headers: {
+          ...getAuthHeader(),
+        },
       });
 
       if (!response.ok) {
@@ -51,8 +55,8 @@ export const userDetailsService = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...getAuthHeader(),
         },
-        credentials: 'include',
         body: JSON.stringify({ ...data, userId }),
       });
 
@@ -82,8 +86,8 @@ export const userDetailsService = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
+          ...getAuthHeader(),
         },
-        credentials: 'include',
         body: JSON.stringify(data),
       });
 
@@ -97,16 +101,7 @@ export const userDetailsService = {
         throw new Error(`Failed to update user details: ${response.status} ${response.statusText}`);
       }
 
-      const updatedData = await response.json();
-
-      return {
-        _id: updatedData._id,
-        userId: updatedData.userId,
-        address: updatedData.address || '',
-        description: updatedData.description || '',
-        instrumentId: updatedData.instrumentId || '',
-        isOpenToWork: updatedData.isOpenToWork || false,
-      };
+      return response.json();
     } catch (error) {
       console.error('Error updating user details:', error);
       throw error;
@@ -117,7 +112,9 @@ export const userDetailsService = {
     try {
       const response = await fetch(`${API_URL}/user-details/${userId}`, {
         method: 'DELETE',
-        credentials: 'include',
+        headers: {
+          ...getAuthHeader(),
+        },
       });
 
       if (!response.ok) {

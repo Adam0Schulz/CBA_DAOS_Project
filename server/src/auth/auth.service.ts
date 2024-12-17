@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, ConflictException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User, UserCore } from '@packages/types';
@@ -17,12 +17,12 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      return null;
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      return null;
     }
 
     const { password: _, ...result } = user.toObject();
@@ -35,26 +35,19 @@ export class AuthService {
     const userDetail = await this.userDetailsService.getUserDetailByUserId(userId);
     if (userDetail) {
       await this.userDetailsService.updateUserDetail(userId, {
-        lastLoggedIn: new Date('2024-12-16T14:51:44+01:00')
+        lastLoggedIn: new Date()
       });
     }
 
     const payload = {
       email: user.email,
-      sub: user.id || user._id,
+      sub: user._id.toString(),
       firstName: user.firstName,
-      lastName: user.lastName,
-      createdAt: user.createdAt.toISOString()
+      lastName: user.lastName
     };
+
     return {
       access_token: this.jwtService.sign(payload),
-      user: {
-        id: user.id || user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        createdAt: user.createdAt.toISOString()
-      }
     };
   }
 
@@ -91,9 +84,8 @@ export class AuthService {
         lastLoggedIn: null
       });
 
-      return {
-        user: newUser
-      };
+      const { password: _, ...result } = newUser.toObject();
+      return { user: result };
     } catch (error) {
       if (error.code === 11000) { // MongoDB duplicate key error
         throw new ConflictException('Email already registered');
@@ -102,8 +94,8 @@ export class AuthService {
     }
   }
 
-  async hashPassword(password: string): Promise<string> {
-    const saltRounds = 10;
-    return bcrypt.hash(password, saltRounds);
+  private async hashPassword(password: string): Promise<string> {
+    const saltOrRounds = 10;
+    return await bcrypt.hash(password, saltOrRounds);
   }
 }

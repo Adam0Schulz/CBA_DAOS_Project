@@ -1,9 +1,11 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { UserDetailsService } from './userDetails.service';
 import { UserDetail } from '../databases/schemas/userDetail.schema';
 import { Types } from 'mongoose';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('user-details')
+@UseGuards(JwtAuthGuard)
 export class UserDetailsController {
   constructor(private readonly userDetailsService: UserDetailsService) {}
 

@@ -6,9 +6,31 @@ import { EnsembleCore } from "@packages/types";
 import { format } from "date-fns";
 import EditUserProfile from "@/components/EditUserProfile/EditUserProfile";
 import type { Instrument } from "@/services/instruments.service";
+import { jwtDecode } from "jwt-decode";
+
+interface User {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  instrumentId?: string;
+  isOpenToWork: boolean;
+  createdAt: string;
+}
+
+interface JwtPayload {
+  sub: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  isOpenToWork: boolean;
+  instrumentId?: string;
+  createdAt: string;
+}
 
 const ProfilePage: React.FC = () => {
-  const { user, setUser } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
   const [userEnsembles, setUserEnsembles] = useState<EnsembleCore[]>([]);
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -16,14 +38,27 @@ const ProfilePage: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token && isAuthenticated) {
+      const decoded = jwtDecode<JwtPayload>(token);
+      setUser({
+        id: decoded.sub,
+        email: decoded.email,
+        firstName: decoded.firstName,
+        lastName: decoded.lastName,
+        instrumentId: decoded.instrumentId,
+        isOpenToWork: decoded.isOpenToWork,
+        createdAt: decoded.createdAt
+      });
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
     if (user) {
-       console.log(user);
       Promise.all([
         fetchUserEnsembles(user.id),
         fetchInstruments()
-
-       
-      ]);
+      ]).catch(console.error);
     }
   }, [user]);
 
@@ -58,7 +93,7 @@ const ProfilePage: React.FC = () => {
     return instrument ? instrument.name : "Unknown instrument";
   };
 
-  if (!user) {
+  if (!isAuthenticated) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <div className="text-center">
@@ -105,8 +140,6 @@ const ProfilePage: React.FC = () => {
             {user.createdAt ? format(new Date(user.createdAt), "MMMM d, yyyy") : "N/A"}
           </p>
         </div>
-
-   
 
         {/* Edit Profile Button */}
         <div className="mt-6">

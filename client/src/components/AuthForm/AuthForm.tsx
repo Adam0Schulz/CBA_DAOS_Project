@@ -4,12 +4,6 @@ import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 interface AuthResponse {
   access_token: string;
-  user: {
-    id: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-  };
 }
 
 interface ErrorResponse {
@@ -90,9 +84,8 @@ const AuthForm: React.FC = () => {
       const authData = data as AuthResponse;
       
       if (isLogin) {
-        // Store the token and user data only for login
+        // Store only the token
         localStorage.setItem('token', authData.access_token);
-        localStorage.setItem('user', JSON.stringify(authData.user));
         // Redirect to main page after login
         window.location.href = '/';
       } else {

@@ -1,19 +1,29 @@
-POST http://localhost:5000/auth/login
+@baseUrl = http://localhost:5000
+
+### Login and get JWT token
+# @name login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "admin12@admin.com",
+    "email": "admins@admin.com",
     "password": "admin1234"
 }
 
 ###
+@authToken = {{login.response.body.access_token}}
 
-POST http://localhost:5000/auth/register
+### Register new user
+POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-    "email": "admin1222@admin2123.com",
+    "email": "admins@admin.com",
     "password": "admin1234",
     "firstName": "Admin",
     "lastName": "Admin"
 }
+
+### Get profile (Protected Route)
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{authToken}}

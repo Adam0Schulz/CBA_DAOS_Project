@@ -4,11 +4,26 @@
 @instrumentId = 675bf1b7979320c15d93c39a
 @applicationId = 675bf1b7979320c15d93c39a
 
-### Create user detail
-POST {{baseUrl}}/userDetails/{{userId}}
+### Login first to get token
+# @name login
+POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
+    "email": "admins@admin.com",
+    "password": "admin1234"
+}
+
+###
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluc0BhZG1pbi5jb20iLCJzdWIiOiI2NzYxODhmNGNmNTkyNGI4ZTVlOTM1OWMiLCJmaXJzdE5hbWUiOiJBZG1pbiIsImxhc3ROYW1lIjoiQWRtaW4iLCJpYXQiOjE3MzQ0NDYxMTcsImV4cCI6MTczNDUzMjUxN30.0rF2IEzCBemAJB2z1pNhTpKtKSL7_0N9CVJs628wi3I
+
+### Create user detail
+POST {{baseUrl}}/user-details
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "userId": "{{userId}}",
   "address": "123 Test Street",
   "description": "Test user description",
   "instrumentId": "{{instrumentId}}",
@@ -18,11 +33,13 @@ Content-Type: application/json
 }
 
 ### Get user detail by userId
-GET {{baseUrl}}/userDetails/{{userId}}
+GET {{baseUrl}}/user-details/{{userId}}
+Authorization: Bearer {{authToken}}
 
 ### Update user detail
-PUT {{baseUrl}}/userDetails/{{userId}}
+PATCH {{baseUrl}}/user-details/{{userId}}
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
   "address": "456 Updated Street",
@@ -34,4 +51,5 @@ Content-Type: application/json
 }
 
 ### Delete user detail
-DELETE {{baseUrl}}/userDetails/{{userId}}
+DELETE {{baseUrl}}/user-details/{{userId}}
+Authorization: Bearer {{authToken}}

@@ -1,3 +1,5 @@
+import { getAuthHeader } from '../utils/auth';
+
 const API_URL = 'http://localhost:3000/api';
 
 export interface Instrument {
@@ -11,7 +13,7 @@ export const instrumentsService = {
   async getAllInstruments(): Promise<Instrument[]> {
     try {
       const response = await fetch(`${API_URL}/instruments`, {
-        credentials: 'include',
+        headers: getAuthHeader(),
       });
 
       if (!response.ok) {
@@ -35,10 +37,7 @@ export const instrumentsService = {
     try {
       const response = await fetch(`${API_URL}/instruments/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
+        headers: getAuthHeader(),
         body: JSON.stringify(data),
       });
 
