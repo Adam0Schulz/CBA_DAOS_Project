@@ -5,10 +5,11 @@ import { instrumentsService } from "@/services/instruments.service";
 import { userDetailsService } from "@/services/userDetails.service";
 import { EnsembleCore } from "@packages/types";
 import { FrontendUser } from "@packages/types";
-import { format } from "date-fns";
 import EditUserProfile from "@/components/EditUserProfile/EditUserProfile";
 import type { Instrument } from "@/services/instruments.service";
 import { jwtDecode } from "jwt-decode";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit } from "@fortawesome/free-solid-svg-icons";
 
 interface JwtPayload {
   sub: string;
@@ -19,7 +20,7 @@ interface JwtPayload {
 }
 
 const ProfilePage: React.FC = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [user, setUser] = useState<FrontendUser | null>(null);
   const [userDetails, setUserDetails] = useState<any>(null);
   const [userEnsembles, setUserEnsembles] = useState<EnsembleCore[]>([]);
@@ -27,6 +28,8 @@ const ProfilePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -96,6 +99,49 @@ const ProfilePage: React.FC = () => {
   const handleSaveProfile = async () => {
     if (user) {
       await fetchUserDetails(user.id);
+      
+      // Update user state from token after profile save
+      const token = localStorage.getItem('token');
+      if (token) {
+        const decoded = jwtDecode<JwtPayload>(token);
+        setUser({
+          id: decoded.sub,
+          email: decoded.email,
+          firstName: decoded.firstName,
+          lastName: decoded.lastName,
+          createdAt: decoded.createdAt
+        });
+      }
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
+
+      const response = await fetch(`http://localhost:5000/users/${user.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete account');
+      }
+
+      // Logout and redirect
+      logout();
+    } catch (err: any) {
+      setDeleteError(err.message);
+      console.error('Account deletion error:', err);
     }
   };
 
@@ -121,18 +167,12 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-8 py-8 mt-20">
+    <div className="container mx-auto px-8 py-8 mt-20 relative">
       <div className="bg-white shadow-md rounded-lg">
         {/* Profile Information */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-blue-900">Profile</h1>
-            <button
-              onClick={() => setIsEditModalOpen(true)}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            >
-              Edit Profile
-            </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
@@ -180,6 +220,49 @@ const ProfilePage: React.FC = () => {
             </div>
 
             <div className="bg-gray-50 p-4 rounded-lg h-fit">
+              <h2 className="text-lg font-semibold text-red-700 mb-4">Account Management</h2>
+              <div className="space-y-3">
+                <div className="bg-white p-3 rounded-lg shadow-sm flex justify-between items-center">
+                  <div className="flex items-center space-x-4">
+                    <FontAwesomeIcon 
+                      icon={faEdit} 
+                      className="text-blue-500 text-xl"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-800">Edit Profile</p>
+                      <p className="text-sm text-gray-600 mt-1">Update your personal information and preferences</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setIsEditModalOpen(true)}
+                    className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors w-24 text-center"
+                  >
+                    Edit
+                  </button>
+                </div>
+
+                <div className="bg-white p-3 rounded-lg shadow-sm flex justify-between items-center">
+                  <div className="flex items-center space-x-4">
+                    <FontAwesomeIcon 
+                      icon={faTrash} 
+                      className="text-red-500 text-xl"
+                    />
+                    <div>
+                      <p className="font-medium text-gray-800">Delete Account</p>
+                      <p className="text-sm text-gray-600 mt-1">Permanently remove your account and all associated data</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setIsDeleteModalOpen(true)}
+                    className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors w-24 text-center"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg h-fit">
               <h2 className="text-lg font-semibold text-gray-700 mb-4">My Ensembles</h2>
               {userEnsembles.length > 0 ? (
                 <div className="space-y-3">
@@ -206,6 +289,39 @@ const ProfilePage: React.FC = () => {
         currentDetails={userDetails}
         instruments={instruments}
       />
+
+      {/* Account Deletion Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl max-w-md w-full">
+            <h2 className="text-xl font-bold text-red-600 mb-4">Delete Account</h2>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete your account? This action cannot be undone.
+            </p>
+            
+            {deleteError && (
+              <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+                {deleteError}
+              </div>
+            )}
+
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              >
+                Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

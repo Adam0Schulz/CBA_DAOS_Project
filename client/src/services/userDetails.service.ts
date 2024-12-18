@@ -57,6 +57,25 @@ export const userDetailsService = {
     }
   },
 
+  async getAllUserDetails() {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("No token found. Please log in again.");
+
+    const response = await fetch(`${API_URL}/user-details`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Get All User Details Error:", errorText);
+      throw new Error(`Failed to fetch user details: ${response.statusText}`);
+    }
+
+    return response.json();
+  },
+
   async createUserDetails(
     userId: string,
     data: Omit<UserDetails, '_id' | 'userId'>
@@ -141,24 +160,5 @@ export const userDetailsService = {
       console.error('Error deleting user details:', error);
       throw error;
     }
-  },
-
-  async getAllUserDetails() {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("No token found. Please log in again.");
-
-    const response = await fetch(`${API_URL}/user-details`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Get All User Details Error:", errorText);
-      throw new Error(`Failed to fetch user details: ${response.statusText}`);
-    }
-
-    return response.json();
-  },
+  }
 };

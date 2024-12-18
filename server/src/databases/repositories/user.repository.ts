@@ -5,7 +5,9 @@ import { User, UserCore } from '@packages/types';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private userModel: Model<User>,
+  ) {}
 
   async createUser(user: UserCore): Promise<User> {
     const modUser = {...user, createdAt: new Date()};

@@ -6,8 +6,8 @@ import { instrumentsService, Instrument } from "@/services/instruments.service";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faMusic, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { MusicianCard } from "@/components/MusicianCard";
-import { User, UserDetail } from "@packages/types"; // added import statement for User type
-import { useAuth } from "@/hooks/useAuth"; // added import statement for useAuth hook
+import { User, UserDetail } from "@packages/types"; 
+import { useAuth } from "@/hooks/useAuth";
 
 const ITEMS_PER_PAGE = 9;
 

@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
+import { 
+  Body, 
+  Controller, 
+  Delete, 
+  Get, 
+  Param, 
+  Post, 
+  Put, 
+  Request, 
+  UseGuards,
+  UnauthorizedException 
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from '@packages/types';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -36,7 +47,36 @@ export class UsersController {
   }
 
   @Put(':id')
-  async updateUserProfile(@Param('id') id: string, @Body() updateData: Partial<User>) {
-    return this.usersService.updateUserProfile(id, updateData);
+  async updateUserProfile(@Param('id') id: string, @Body() updateData: Partial<User>): Promise<{ user: User, token: string }> {
+    return await this.usersService.updateUserProfile(id, updateData);
+  }
+
+  @Post(':id/change-password')
+  @UseGuards(JwtAuthGuard)
+  async changePassword(
+    @Param('id') id: string,
+    @Body('oldPassword') oldPassword: string,
+    @Body('newPassword') newPassword: string,
+  ) {
+    await this.usersService.changePassword(id, oldPassword, newPassword);
+    return {
+      statusCode: 200,
+      message: 'Password changed successfully'
+    };
+  }
+
+  @Delete(':id')
+  async deleteUser(@Request() req, @Param('id') userId: string) {
+    // Debug logging
+    console.log('Delete Request User:', req.user);
+    console.log('Requested User ID to Delete:', userId);
+
+    // Ensure the user can only delete their own account
+    if (req.user.id !== userId) {
+      throw new UnauthorizedException('You can only delete your own account');
+    }
+
+    await this.usersService.deleteUser(userId);
+    return { message: 'Account successfully deleted' };
   }
 }

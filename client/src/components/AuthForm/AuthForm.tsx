@@ -23,6 +23,24 @@ const AuthForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const validatePassword = (password: string): string | null => {
+    // Check password length
+    if (password.length < 6) {
+      return "Password must be at least 6 characters long";
+    }
+
+    // Check password complexity
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+
+    if (!hasUpperCase || !hasLowerCase || !hasNumber) {
+      return "Password must contain at least one uppercase letter, one lowercase letter, and one number";
+    }
+
+    return null;
+  };
+
   const submitHandler = async (event: FormEvent) => {
     event.preventDefault();
     setError(null);
@@ -48,6 +66,13 @@ const AuthForm: React.FC = () => {
 
       if (!enteredConfirmPassword || enteredPassword !== enteredConfirmPassword) {
         setError("Passwords do not match.");
+        return;
+      }
+
+      // Validate password complexity for registration
+      const passwordError = validatePassword(enteredPassword);
+      if (passwordError) {
+        setError(passwordError);
         return;
       }
     }
@@ -205,9 +230,12 @@ const AuthForm: React.FC = () => {
             <button
               type="button"
               onClick={togglePasswordVisibility}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+              className="absolute inset-y-0 right-0 flex items-center pr-3"
             >
-              <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
+              <FontAwesomeIcon
+                icon={showPasswords ? faEyeSlash : faEye}
+                className="text-gray-400 hover:text-gray-600"
+              />
             </button>
           </div>
         </div>
@@ -232,9 +260,12 @@ const AuthForm: React.FC = () => {
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+                className="absolute inset-y-0 right-0 flex items-center pr-3"
               >
-                <FontAwesomeIcon icon={showPasswords ? faEyeSlash : faEye} />
+                <FontAwesomeIcon
+                  icon={showPasswords ? faEyeSlash : faEye}
+                  className="text-gray-400 hover:text-gray-600"
+                />
               </button>
             </div>
           </div>
