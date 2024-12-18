@@ -38,4 +38,8 @@ export class UserDetailRepository {
   async deleteUserDetail(userId: Types.ObjectId): Promise<UserDetail | null> {
     return this.userDetailModel.findOneAndDelete({ userId }).exec();
   }
+
+  async findAllUserDetails(): Promise<UserDetail[]> {
+    return this.userDetailModel.find().exec();
+  }
 }

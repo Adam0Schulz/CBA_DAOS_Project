@@ -16,8 +16,8 @@ export interface ExtendedFrontendUser {
   createdAt: string;
   address?: string;
   description?: string;
-  instrumentId?: Types.ObjectId;
-  applicationId?: Types.ObjectId;
+  instrumentId?: string;
+  applicationId?: string;
   isOpenToWork: boolean;
   lastLoggedIn?: Date | null;
 }

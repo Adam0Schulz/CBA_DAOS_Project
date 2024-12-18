@@ -9,9 +9,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Get()
-  findAll() {
+  @UseGuards(JwtAuthGuard)
+  async getAllUsers() {
     return this.usersService.getAllUsers();
   }
+
   @Get(':id')
   async getUserById(@Param('id') id: string) {
     const trimmedId = id.trim();

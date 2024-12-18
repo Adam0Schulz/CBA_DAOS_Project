@@ -25,6 +25,11 @@ const Header: React.FC = () => {
               Ensembles
             </button>
           </Link>
+          <Link to="/musicians">
+            <button className="text-lg bg-blue-900 text-white hover:bg-blue-800 px-6 py-2 rounded-md transition duration-300">
+              Musicians
+            </button>
+          </Link>
           <Link to="/profile">
             <button className="text-lg bg-blue-900 text-white hover:bg-blue-800 px-6 py-2 rounded-md transition duration-300">
               Profile

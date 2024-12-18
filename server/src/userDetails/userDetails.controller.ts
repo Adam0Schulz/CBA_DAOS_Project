@@ -22,6 +22,11 @@ export class UserDetailsController {
     return this.userDetailsService.getUserDetailByUserId(new Types.ObjectId(userId));
   }
 
+  @Get()
+  async getAllUserDetails() {
+    return this.userDetailsService.getAllUserDetails();
+  }
+
   @Patch(':userId')
   async updateUserDetail(
     @Param('userId') userId: string,

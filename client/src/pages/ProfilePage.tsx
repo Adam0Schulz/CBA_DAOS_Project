@@ -10,7 +10,6 @@ import EditUserProfile from "@/components/EditUserProfile/EditUserProfile";
 import type { Instrument } from "@/services/instruments.service";
 import { jwtDecode } from "jwt-decode";
 
-
 interface JwtPayload {
   sub: string;
   email: string;
@@ -94,6 +93,12 @@ const ProfilePage: React.FC = () => {
     return instrument ? instrument.name : "Unknown instrument";
   };
 
+  const handleSaveProfile = async () => {
+    if (user) {
+      await fetchUserDetails(user.id);
+    }
+  };
+
   if (!isAuthenticated) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -116,88 +121,91 @@ const ProfilePage: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 bg-white shadow-md rounded-md">
-      {/* Profile Information */}
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h1 className="text-2xl font-bold text-red-600">Profile</h1>
-        <div className="mt-4 space-y-2">
-          <p>
-            <strong>Name:</strong> {user?.firstName} {user?.lastName}
-          </p>
-          <p>
-            <strong>Email:</strong> {user?.email}
-          </p>
-          <p>
-            <strong>Instrument:</strong> {getCurrentInstrumentName()}
-          </p>
-          {userDetails && (
-            <>
-              <p>
-                <strong>Address:</strong> {userDetails.address || 'Not provided'}
-              </p>
-              <p>
-                <strong>Description:</strong> {userDetails?.description || 'Not provided'}
-              </p>
-            </>
-          )}
-          <p>
-            <strong>Available for Ensembles:</strong>{" "}
-            <span className={userDetails?.isOpenToWork ? "text-green-600" : "text-red-600"}>
-              {userDetails?.isOpenToWork ? "Yes" : "No"}
-            </span>
-          </p>
-          <p>
-            <strong>Member Since:</strong>{" "}
-            {user?.createdAt ? format(new Date(user.createdAt), "MMMM d, yyyy") : "N/A"}
-          </p>
-        </div>
-
-        {/* Edit Profile Button */}
-        <div className="mt-6">
-          <button
-            onClick={() => setIsEditModalOpen(true)}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            Edit Profile
-          </button>
-        </div>
-      </div>
-
-      {/* My Ensembles Section */}
-      <div className="px-6 py-4">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">My Ensembles</h2>
-        {error && <p className="text-red-600">{error}</p>}
-        {userEnsembles.length === 0 ? (
-          <p className="text-gray-600">You haven't joined any ensembles yet.</p>
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {userEnsembles.map((ensemble) => (
-              <div
-                key={ensemble._id}
-                className="border rounded-lg p-4 bg-gray-50"
-              >
-                <h3 className="text-lg font-semibold text-gray-900">{ensemble.name}</h3>
-                <p className="text-gray-600">{ensemble.description}</p>
-              </div>
-            ))}
+    <div className="container mx-auto px-8 py-8 mt-20">
+      <div className="bg-white shadow-md rounded-lg">
+        {/* Profile Information */}
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-blue-900">Profile</h1>
+            <button
+              onClick={() => setIsEditModalOpen(true)}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Edit Profile
+            </button>
           </div>
-        )}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="space-y-6">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h2 className="text-lg font-semibold text-gray-700 mb-4">Personal Information</h2>
+                <div className="space-y-3">
+                  <p className="flex items-center">
+                    <span className="font-medium w-28">Name:</span>
+                    <span className="text-gray-700">{user?.firstName} {user?.lastName}</span>
+                  </p>
+                  <p className="flex items-center">
+                    <span className="font-medium w-28">Email:</span>
+                    <span className="text-gray-700">{user?.email}</span>
+                  </p>
+                  <p className="flex items-center">
+                    <span className="font-medium w-28">Instrument:</span>
+                    <span className="text-gray-700">{getCurrentInstrumentName()}</span>
+                  </p>
+                  <p className="flex items-center">
+                    <span className="font-medium w-28">Status:</span>
+                    <span className={`px-3 py-1 rounded-full text-sm ${
+                      userDetails?.isOpenToWork 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {userDetails?.isOpenToWork ? 'Open to Work' : 'Not Available'}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h2 className="text-lg font-semibold text-gray-700 mb-4">Additional Details</h2>
+                <div className="space-y-3">
+                  <div>
+                    <span className="font-medium block mb-1">Address:</span>
+                    <p className="text-gray-700">{userDetails?.address || 'Not provided'}</p>
+                  </div>
+                  <div>
+                    <span className="font-medium block mb-1">Description:</span>
+                    <p className="text-gray-700">{userDetails?.description || 'Not provided'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-lg h-fit">
+              <h2 className="text-lg font-semibold text-gray-700 mb-4">My Ensembles</h2>
+              {userEnsembles.length > 0 ? (
+                <div className="space-y-3">
+                  {userEnsembles.map((ensemble) => (
+                    <div key={ensemble._id} className="bg-white p-3 rounded-lg shadow-sm">
+                      <p className="font-medium text-gray-800">{ensemble.name}</p>
+                      <p className="text-sm text-gray-600 mt-1">{ensemble.description || 'No description'}</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500">You are not a member of any ensembles yet.</p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Edit Profile Modal */}
-      {isEditModalOpen && user && (
-        <EditUserProfile
-          user={user}
-          setUser={setUser}
-          onClose={() => {
-            setIsEditModalOpen(false);
-            // Refresh user details when modal closes
-            if (user) {
-              fetchUserDetails(user.id);
-            }
-          }}
-        />
-      )}
+      <EditUserProfile
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        onSave={handleSaveProfile}
+        currentUser={user}
+        currentDetails={userDetails}
+        instruments={instruments}
+      />
     </div>
   );
 };

@@ -11,7 +11,8 @@ export class UsersService {
 
 
   async getAllUsers() {
-    return this.userRepository.findAll();
+    console.log('UsersService - Fetching all users');
+    return await this.userRepository.findAllUsers();
   }
 
   async createUser(data: UserCore): Promise<User> {

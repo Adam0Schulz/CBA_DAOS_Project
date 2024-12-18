@@ -10,13 +10,12 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "admins@admin.com",
+    "email": "admin@admin.com",
     "password": "admin1234"
 }
 
 ###
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluc0BhZG1pbi5jb20iLCJzdWIiOiI2NzYxODhmNGNmNTkyNGI4ZTVlOTM1OWMiLCJmaXJzdE5hbWUiOiJBZG1pbiIsImxhc3ROYW1lIjoiQWRtaW4iLCJpYXQiOjE3MzQ0NDYxMTcsImV4cCI6MTczNDUzMjUxN30.0rF2IEzCBemAJB2z1pNhTpKtKSL7_0N9CVJs628wi3I
-
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInN1YiI6IjY3NjJjNzk4ZDc3NDEyNmYxODUwMTAzMiIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNciIsImNyZWF0ZWRBdCI6IjIwMjQtMTItMThUMTM6MDE6MTIuOTUyWiIsImlhdCI6MTczNDUyOTg1NiwiZXhwIjoxNzM0NjE2MjU2fQ.nlKO89VmGIy-VsmQOXd4D_A5UaONaLmBgbXeg60Gngw
 ### Create user detail
 POST {{baseUrl}}/user-details
 Content-Type: application/json
@@ -31,6 +30,10 @@ Authorization: Bearer {{authToken}}
   "isOpenToWork": true,
   "lastLoggedIn": null
 }
+
+### Get all user details
+GET {{baseUrl}}/user-details
+Authorization: Bearer {{authToken}}
 
 ### Get user detail by userId
 GET {{baseUrl}}/user-details/{{userId}}

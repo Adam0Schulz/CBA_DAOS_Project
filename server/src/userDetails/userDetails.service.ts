@@ -22,4 +22,8 @@ export class UserDetailsService {
   async deleteUserDetail(userId: Types.ObjectId) {
     return this.userDetailRepository.deleteUserDetail(userId);
   }
+
+  async getAllUserDetails() {
+    return this.userDetailRepository.findAllUserDetails();
+  }
 }
