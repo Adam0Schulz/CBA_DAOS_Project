@@ -46,6 +46,9 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
   });
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const fetchInstruments = async () => {
@@ -320,7 +323,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={showOldPassword ? "text" : "password"}
                   name="oldPassword"
                   value={passwordData.oldPassword}
                   onChange={handlePasswordChange}
@@ -329,6 +332,16 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
                   focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
                   hover:border-slate-400 transition-colors duration-200 pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowOldPassword(!showOldPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <FontAwesomeIcon
+                    icon={showOldPassword ? faEyeSlash : faEye}
+                    className="h-5 w-5 text-gray-400 hover:text-gray-500"
+                  />
+                </button>
               </div>
             </div>
 
@@ -338,7 +351,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={showNewPassword ? "text" : "password"}
                   name="newPassword"
                   value={passwordData.newPassword}
                   onChange={handlePasswordChange}
@@ -347,6 +360,16 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
                   focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
                   hover:border-slate-400 transition-colors duration-200 pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <FontAwesomeIcon
+                    icon={showNewPassword ? faEyeSlash : faEye}
+                    className="h-5 w-5 text-gray-400 hover:text-gray-500"
+                  />
+                </button>
               </div>
             </div>
 
@@ -356,7 +379,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
               </label>
               <div className="relative">
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   name="confirmNewPassword"
                   value={passwordData.confirmNewPassword}
                   onChange={handlePasswordChange}
@@ -365,6 +388,16 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
                   focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
                   hover:border-slate-400 transition-colors duration-200 pr-10"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                >
+                  <FontAwesomeIcon
+                    icon={showConfirmPassword ? faEyeSlash : faEye}
+                    className="h-5 w-5 text-gray-400 hover:text-gray-500"
+                  />
+                </button>
               </div>
             </div>
 
