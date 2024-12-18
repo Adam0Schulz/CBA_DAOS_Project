@@ -5,10 +5,12 @@ import { User, UserCore } from '@packages/types';
 
 @Injectable()
 export class UserRepository {
-  constructor(@InjectModel('User') private userModel: Model<User>) {}
+  constructor(
+    @InjectModel('User') private userModel: Model<User>,
+  ) {}
 
   async createUser(user: UserCore): Promise<User> {
-    const modUser = {...user, createdAt: new Date(), lastLoggedIn: null};
+    const modUser = {...user, createdAt: new Date()};
     const newUser = new this.userModel(modUser);
     return await newUser.save();
   }
@@ -17,10 +19,13 @@ export class UserRepository {
     return this.userModel.find().exec();
   }
 
+  async findAllUsers(): Promise<User[]> {
+    return await this.userModel.find().exec();
+  }
+
   async findUserById(id: string): Promise<User | null> {
     return await this.userModel.findById(id).exec();
   }
-
   async findOneByEmail(email: string): Promise<User | null> {
     return this.userModel.findOne({ email }).exec();
   }

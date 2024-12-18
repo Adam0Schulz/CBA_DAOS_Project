@@ -1,0 +1,98 @@
+@baseUrl = http://localhost:5000
+
+
+### Login and get JWT token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admins@admin.com",
+    "password": "admin1234"
+}
+
+###
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluc0BhZG1pbi5jb20iLCJzdWIiOiI2NzYzMTVjOTAxN2RjZjIxZTdjOTEwYjciLCJmaXJzdE5hbWUiOiJBZG1pbiIsImxhc3ROYW1lIjoiQWRtaW4iLCJjcmVhdGVkQXQiOiIyMDI0LTEyLTE4VDE4OjM0OjQ5LjAyN1oiLCJpYXQiOjE3MzQ1NDY5MTUsImV4cCI6MTczNDYzMzMxNX0.TUvDVYIE5-yhWQNiZIkem6j52C5PIaWom7RPRHwbPlU
+
+### Register new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "email": "admins@admin.com",
+    "password": "admin1234",
+    "firstName": "Admin",
+    "lastName": "Admin"
+}
+
+###
+
+DELETE {{baseUrl}}/users/676315c9017dcf21e7c910b7
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+### Get profile (Protected Route)
+GET {{baseUrl}}/auth/profile
+Authorization: Bearer {{authToken}}
+
+### Change Password Tests
+
+### Change password (should succeed)
+POST {{baseUrl}}/users/6762c798d774126f18501032/change-password
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "oldPassword": "Admin567",
+  "newPassword": "Admin5678"
+}
+
+### Try to login with old password (should fail)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "admin1234"
+}
+
+### Login with new password (should succeed)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "Admin5678"
+}
+
+### Test error cases
+
+### Try to change password with incorrect old password
+POST {{baseUrl}}/users/6762c798d774126f18501032/change-password
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "oldPassword": "wrongpassword",
+  "newPassword": "newpassword123"
+}
+
+### Try to change password with too short new password
+POST {{baseUrl}}/users/6762c798d774126f18501032/change-password
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "oldPassword": "Admin5678",
+  "newPassword": "shortsdasdsad"
+}
+
+### Try to change password without authentication
+POST {{baseUrl}}/users/6762c798d774126f18501032/change-password
+Content-Type: application/json
+
+{
+  "oldPassword": "admin5678",
+  "newPassword": "newpassword123"
+}
