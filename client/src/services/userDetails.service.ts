@@ -1,4 +1,5 @@
 import { getAuthHeader } from '../utils/auth';
+import { Types } from 'mongoose';
 
 const API_URL = 'http://localhost:3000/api';
 
@@ -11,10 +12,20 @@ export interface UserDetails {
   isOpenToWork: boolean;
 }
 
+const ensureObjectId = (id: string) => {
+  try {
+    return new Types.ObjectId(id).toString();
+  } catch {
+    // If the ID is not in the correct format, return it as is
+    // The backend will handle the error appropriately
+    return id;
+  }
+};
+
 export const userDetailsService = {
   async getUserDetails(userId: string): Promise<UserDetails> {
     try {
-      const response = await fetch(`${API_URL}/user-details/${userId}`, {
+      const response = await fetch(`${API_URL}/user-details/${ensureObjectId(userId)}`, {
         headers: {
           ...getAuthHeader(),
         },
@@ -57,7 +68,7 @@ export const userDetailsService = {
           'Content-Type': 'application/json',
           ...getAuthHeader(),
         },
-        body: JSON.stringify({ ...data, userId }),
+        body: JSON.stringify({ ...data, userId: ensureObjectId(userId) }),
       });
 
       if (!response.ok) {
@@ -82,7 +93,7 @@ export const userDetailsService = {
     data: Partial<Omit<UserDetails, '_id' | 'userId'>>
   ): Promise<UserDetails> {
     try {
-      const response = await fetch(`${API_URL}/user-details/${userId}`, {
+      const response = await fetch(`${API_URL}/user-details/${ensureObjectId(userId)}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +121,7 @@ export const userDetailsService = {
 
   async deleteUserDetails(userId: string): Promise<void> {
     try {
-      const response = await fetch(`${API_URL}/user-details/${userId}`, {
+      const response = await fetch(`${API_URL}/user-details/${ensureObjectId(userId)}`, {
         method: 'DELETE',
         headers: {
           ...getAuthHeader(),

@@ -2,35 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { ensemblesService } from "@/services/ensembles.service";
 import { instrumentsService } from "@/services/instruments.service";
+import { userDetailsService } from "@/services/userDetails.service";
 import { EnsembleCore } from "@packages/types";
+import { FrontendUser } from "@packages/types";
 import { format } from "date-fns";
 import EditUserProfile from "@/components/EditUserProfile/EditUserProfile";
 import type { Instrument } from "@/services/instruments.service";
 import { jwtDecode } from "jwt-decode";
 
-interface User {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  instrumentId?: string;
-  isOpenToWork: boolean;
-  createdAt: string;
-}
 
 interface JwtPayload {
   sub: string;
   email: string;
   firstName: string;
   lastName: string;
-  isOpenToWork: boolean;
-  instrumentId?: string;
   createdAt: string;
 }
 
 const ProfilePage: React.FC = () => {
   const { isAuthenticated } = useAuth();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<FrontendUser | null>(null);
+  const [userDetails, setUserDetails] = useState<any>(null);
   const [userEnsembles, setUserEnsembles] = useState<EnsembleCore[]>([]);
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,17 +31,16 @@ const ProfilePage: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token && isAuthenticated) {
+    if (token) {
       const decoded = jwtDecode<JwtPayload>(token);
       setUser({
         id: decoded.sub,
         email: decoded.email,
         firstName: decoded.firstName,
         lastName: decoded.lastName,
-        instrumentId: decoded.instrumentId,
-        isOpenToWork: decoded.isOpenToWork,
         createdAt: decoded.createdAt
       });
+      console.log('Decoded token:', decoded);
     }
   }, [isAuthenticated]);
 
@@ -57,7 +48,8 @@ const ProfilePage: React.FC = () => {
     if (user) {
       Promise.all([
         fetchUserEnsembles(user.id),
-        fetchInstruments()
+        fetchInstruments(),
+        fetchUserDetails(user.id)
       ]).catch(console.error);
     }
   }, [user]);
@@ -87,9 +79,18 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  const fetchUserDetails = async (userId: string) => {
+    try {
+      const details = await userDetailsService.getUserDetails(userId);
+      setUserDetails(details);
+    } catch (err) {
+      console.error("Failed to load user details:", err);
+    }
+  };
+
   const getCurrentInstrumentName = () => {
-    if (!user?.instrumentId) return "Not selected";
-    const instrument = instruments.find((i) => i._id === user.instrumentId);
+    if (!userDetails?.instrumentId) return "Not selected";
+    const instrument = instruments.find((i) => i._id === userDetails.instrumentId);
     return instrument ? instrument.name : "Unknown instrument";
   };
 
@@ -121,23 +122,33 @@ const ProfilePage: React.FC = () => {
         <h1 className="text-2xl font-bold text-red-600">Profile</h1>
         <div className="mt-4 space-y-2">
           <p>
-            <strong>Name:</strong> {user.firstName} {user.lastName}
+            <strong>Name:</strong> {user?.firstName} {user?.lastName}
           </p>
           <p>
-            <strong>Email:</strong> {user.email}
+            <strong>Email:</strong> {user?.email}
           </p>
           <p>
             <strong>Instrument:</strong> {getCurrentInstrumentName()}
           </p>
+          {userDetails && (
+            <>
+              <p>
+                <strong>Address:</strong> {userDetails.address || 'Not provided'}
+              </p>
+              <p>
+                <strong>Description:</strong> {userDetails?.description || 'Not provided'}
+              </p>
+            </>
+          )}
           <p>
             <strong>Available for Ensembles:</strong>{" "}
-            <span className={user.isOpenToWork ? "text-green-600" : "text-red-600"}>
-              {user.isOpenToWork ? "Yes" : "No"}
+            <span className={userDetails?.isOpenToWork ? "text-green-600" : "text-red-600"}>
+              {userDetails?.isOpenToWork ? "Yes" : "No"}
             </span>
           </p>
           <p>
             <strong>Member Since:</strong>{" "}
-            {user.createdAt ? format(new Date(user.createdAt), "MMMM d, yyyy") : "N/A"}
+            {user?.createdAt ? format(new Date(user.createdAt), "MMMM d, yyyy") : "N/A"}
           </p>
         </div>
 
@@ -174,11 +185,17 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* Edit Profile Modal */}
-      {isEditModalOpen && (
+      {isEditModalOpen && user && (
         <EditUserProfile
           user={user}
           setUser={setUser}
-          onClose={() => setIsEditModalOpen(false)}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            // Refresh user details when modal closes
+            if (user) {
+              fetchUserDetails(user.id);
+            }
+          }}
         />
       )}
     </div>

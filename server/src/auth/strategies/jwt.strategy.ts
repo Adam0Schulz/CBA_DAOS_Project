@@ -24,10 +24,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     return {
-      userId: payload.sub,
+      id: payload.sub, // sub is the user ID in JWT standard
       email: payload.email,
       firstName: payload.firstName,
-      lastName: payload.lastName
+      lastName: payload.lastName,
+      createdAt: payload.createdAt
     };
   }
 }

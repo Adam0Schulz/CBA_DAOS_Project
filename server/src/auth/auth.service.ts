@@ -39,11 +39,18 @@ export class AuthService {
       });
     }
 
+    // Get the full user object to ensure we have all fields
+    const fullUser = await this.usersService.getUserById(userId.toString());
+    if (!fullUser) {
+      throw new Error('User not found');
+    }
+
     const payload = {
       email: user.email,
       sub: user._id.toString(),
       firstName: user.firstName,
-      lastName: user.lastName
+      lastName: user.lastName,
+      createdAt: fullUser.createdAt // Use the createdAt from the full user object
     };
 
     return {
