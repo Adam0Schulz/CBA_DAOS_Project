@@ -294,6 +294,7 @@ const ProfilePage: React.FC = () => {
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleSaveProfile}
         currentUser={user}
+        // @ts-ignore
         currentDetails={userDetails}
         instruments={instruments}
       />

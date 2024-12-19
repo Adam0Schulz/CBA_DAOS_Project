@@ -171,5 +171,33 @@ export const ensemblesService = {
       console.error('Error sending application:', error);
       throw error;
     }
-  }
+  },
+  async createPosition(ensembleId: string, instrumentId: string) {
+    try {
+      const isOwner = false;
+      const response = await fetch(`${API_URL}/positions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ ensembleId, instrumentId, isOwner }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Fetch error details:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        throw new Error(`Failed to create position: ${response.status} ${response.statusText}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Network or parsing error:', error);
+      throw error;
+    }
+  },
 };

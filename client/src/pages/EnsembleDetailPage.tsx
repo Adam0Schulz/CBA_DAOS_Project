@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { EnsembleCore } from '@packages/types';
 import { ensemblesService } from '@/services/ensembles.service';
 import PositionCard from '@/components/PositionCard';
+import AddPositionCard from '@/components/AddPositionCard';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function EnsembleDetailPage() {
@@ -71,6 +72,23 @@ export default function EnsembleDetailPage() {
         }
     };
 
+    const handleAddPosition = async (instrumentId: string) => {
+        
+        if (!ensembleId) return;
+
+        try {
+            const newPosition = await ensemblesService.createPosition(ensembleId, instrumentId);
+            // Update the ensemble with the new position
+            setEnsemble(prev => prev ? {
+                ...prev,
+                positions: [...prev.positions, newPosition]
+            } : null);
+        } catch (err) {
+            console.error('Error adding position:', err);
+            // You might want to show this error to the user in a more user-friendly way
+        }
+    };
+
     if (loading) {
         return <div className="p-4">Loading...</div>;
     }
@@ -105,7 +123,7 @@ export default function EnsembleDetailPage() {
                     </button>
                     <div className="mb-8">
                         <h1 className="text-3xl font-bold mb-4" style={{ color: '#343B5D' }}>{ensemble.name}</h1>
-                        <p className="text-gray-600 mb-6 text-lg">{ensemble.description}</p>
+                        <p className="text-gray-600 mb-6">{ensemble.description}</p>
                     </div>
                 </div>
             </div>
@@ -128,6 +146,11 @@ export default function EnsembleDetailPage() {
                                 onApply={(message) => handleApplyForPosition(position._id, message)}
                             />
                         ))}
+                        
+                        {/* Add Position Card */}
+                        {isEnsembleOwner && (
+                            <AddPositionCard onAddPosition={handleAddPosition} />
+                        )}
                     </div>
                 </div>
             </div>

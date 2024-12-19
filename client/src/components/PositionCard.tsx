@@ -157,7 +157,8 @@ const PositionCard: React.FC<PositionCardProps> = ({
             <ApplicationFormModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onSubmit={handleApply}
+                onSubmit={handleApply} 
+                instrumentName={instrumentId}
             />
 
             <ApplicationsModal
