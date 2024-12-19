@@ -1,15 +1,17 @@
-import { Schema, Document, Types } from 'mongoose';
-
-export interface Ensemble extends Document {
-  name: string;
-  description: string;
-  createdBy: Types.ObjectId, 
-  members: Types.ObjectId[];
-}
+import { Ensemble } from '@packages/types';
+import { Schema} from 'mongoose';
 
 export const EnsembleSchema = new Schema<Ensemble>({
   name: { type: String, required: true },
-  description: { type: String },
-  createdBy: { type: Schema.Types.ObjectId, ref: 'User' }, 
-  members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  description: { type: String, required: false}
+}, {
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+// Virtual populate to get positions
+EnsembleSchema.virtual('positions', {
+  ref: 'Position',
+  localField: '_id',
+  foreignField: 'ensembleId'
 });

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Ensemble } from '../schemas/ensemble.schema';
+import {Ensemble, EnsembleCore} from '@packages/types';
 
 @Injectable()
 export class EnsembleRepository {
@@ -10,16 +10,18 @@ export class EnsembleRepository {
   ) {}
 
   async findAll(): Promise<Ensemble[]> {
-    return this.ensembleModel.find().exec();
+    const ensembles = await this.ensembleModel.find().populate('positions').exec();
+    console.log('Ensembles fetched:', ensembles);
+    return ensembles;
   }
 
-  async createEnsemble(data: any): Promise<Ensemble> {
+  async createEnsemble(data: EnsembleCore): Promise<Ensemble> {
     const newEnsemble = new this.ensembleModel(data);
     return newEnsemble.save();
   }
 
   async findEnsembleById(id: string): Promise<Ensemble | null> {
-    return this.ensembleModel.findById(id).exec();
+    return this.ensembleModel.findById(id).populate('positions').exec();
   }
 
   async updateEnsemble(
@@ -33,8 +35,5 @@ export class EnsembleRepository {
 
   async deleteEnsemble(id: string): Promise<Ensemble | null> {
     return this.ensembleModel.findByIdAndDelete(id).exec();
-  }
-  async findByUserMembership(userId: string): Promise<Ensemble[]> {
-    return this.ensembleModel.find({ members: userId }).exec();
   }
 }

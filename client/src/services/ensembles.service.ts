@@ -1,4 +1,4 @@
-import { EnsembleCore } from '@packages/types';
+import { EnsembleCore, EnsembleIn } from '@packages/types';
 
 const API_URL = 'http://localhost:3000/api';
 
@@ -26,7 +26,7 @@ export const ensemblesService = {
     }
   },
 
-  async createEnsemble(data: Omit<EnsembleCore, 'members'>): Promise<EnsembleCore> {
+  async createEnsemble(data: Omit<EnsembleIn, 'positions'>): Promise<EnsembleCore> {
     try {
       const response = await fetch(`${API_URL}/ensembles`, {
         method: 'POST',
@@ -117,9 +117,83 @@ export const ensemblesService = {
           statusText: response.statusText,
           body: errorText,
         });
-        throw new Error(`Failed to fetch ensembles: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to fetch user ensembles: ${response.status} ${response.statusText}`);
       }
 
+      return response.json();
+    } catch (error) {
+      console.error('Network or parsing error:', error);
+      throw error;
+    }
+  },
+  async getEnsembleById(id: string): Promise<EnsembleCore> {
+    try {
+      const response = await fetch(`${API_URL}/ensembles/${id}`, {
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Fetch error details:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        throw new Error(`Failed to fetch ensemble: ${response.status} ${response.statusText}`);
+      }
+      
+      return response.json();
+    } catch (error) {
+      console.error('Network or parsing error:', error);
+      throw error;
+    }
+  },
+
+  async sendPositionApplication(positionId: string, userId: string, message: string): Promise<void> {
+    try {
+      const response = await fetch(`${API_URL}/applications`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          positionId: positionId,
+          userId: userId,
+          message: message,
+          createdAt: Date.now()
+        })
+      });
+      if (!response.ok) {
+        throw new Error('Failed to send application');
+      }
+    } catch (error) {
+      console.error('Error sending application:', error);
+      throw error;
+    }
+  },
+  async createPosition(ensembleId: string, instrumentId: string) {
+    try {
+      const isOwner = false;
+      const response = await fetch(`${API_URL}/positions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ ensembleId, instrumentId, isOwner }),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Fetch error details:', {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        });
+        throw new Error(`Failed to create position: ${response.status} ${response.statusText}`);
+      }
+      
       return response.json();
     } catch (error) {
       console.error('Network or parsing error:', error);

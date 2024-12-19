@@ -1,0 +1,46 @@
+### Variables
+@baseUrl = http://localhost:5000
+@instrumentId = 675bf1b7979320c15d93c39a
+
+### Login first to get token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admins@admin.com",
+    "password": "admin1234"
+}
+
+###
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluc0BhZG1pbi5jb20iLCJzdWIiOiI2NzYxODhmNGNmNTkyNGI4ZTVlOTM1OWMiLCJmaXJzdE5hbWUiOiJBZG1pbiIsImxhc3ROYW1lIjoiQWRtaW4iLCJpYXQiOjE3MzQ0NDYxMTcsImV4cCI6MTczNDUzMjUxN30.0rF2IEzCBemAJB2z1pNhTpKtKSL7_0N9CVJs628wi3I
+
+### Get all instruments
+GET {{baseUrl}}/instruments
+Authorization: Bearer {{authToken}}
+
+### Get instrument by ID
+GET {{baseUrl}}/instruments/{{instrumentId}}
+Authorization: Bearer {{authToken}}
+
+### Create new instrument
+POST {{baseUrl}}/instruments
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "name": "Saxophone"
+}
+
+### Update instrument
+PATCH {{baseUrl}}/instruments/{{instrumentId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "name": "Alto Saxophone"
+}
+
+### Delete instrument
+DELETE {{baseUrl}}/instruments/{{instrumentId}}
+Authorization: Bearer {{authToken}}

@@ -1,12 +1,12 @@
-import { Document } from "mongoose";
+import { Document, Types } from "mongoose";
 
 export interface User extends Document {
+  _id: Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
+  password?: string; 
   createdAt: Date;
-  lastLoggedInAt: Date | null;
 }
 
 export interface UserCore {
@@ -15,4 +15,3 @@ export interface UserCore {
   email: string;
   password: string;
 }
-

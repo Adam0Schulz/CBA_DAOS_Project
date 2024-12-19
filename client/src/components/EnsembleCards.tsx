@@ -1,102 +1,77 @@
-import React from "react";
+ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faTrash, faPlus, faSignOutAlt } from "@fortawesome/free-solid-svg-icons";
+import { faUserGroup, faMusic, faGuitar } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
+import { EnsembleCore } from "@packages/types";
 
 type EnsembleCardProps = {
-  name: string;
-  description: string;
-  isAddCard?: boolean;
-  onAdd?: () => void;
-  onJoin?: () => void;
-  onDelete?: () => void;
-  onLeave?: () => void;
-  isCreator?: boolean;
-  isMember?: boolean;
+  ensemble: EnsembleCore;
 };
 
 const EnsembleCard: React.FC<EnsembleCardProps> = ({ 
-  name, 
-  description, 
-  isAddCard,
-  onAdd,
-  onJoin,
-  onDelete,
-  onLeave,
-  isCreator,
-  isMember
+  ensemble,
 }) => {
-  if (isAddCard) {
-    return (
-      <div 
-        onClick={onAdd}
-        className="bg-blue-50 hover:bg-blue-100 border-2 border-dashed border-blue-500 text-blue-500 shadow-lg rounded-xl p-6 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center min-h-[220px] group"
-      >
-        <FontAwesomeIcon 
-          icon={faPlus} 
-          className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300" 
-        />
-        <h3 className="text-xl font-semibold group-hover:text-blue-600 transition-colors">
-          Add New Ensemble
-        </h3>
-        <p className="text-gray-600 mt-2 text-center">
-          Create a new music ensemble
-        </p>
-      </div>
-    );
-  }
+  const navigate = useNavigate();
+
+  const openPositions = ensemble.positions.filter(pos => !pos.userId);
+  const isComplete = openPositions.length === 0;
+
+  // Get unique instruments needed
+  const uniqueInstruments = [...new Set(openPositions.map(pos => pos.instrumentId))];
 
   return (
-    <div className="bg-white border border-gray-200 shadow-md hover:shadow-lg rounded-xl p-6 transition-all duration-300 min-h-[220px] flex flex-col justify-between group">
+    <div 
+      className="bg-white border border-gray-200 shadow-md hover:shadow-lg rounded-xl p-6 transition-all duration-300 min-h-[180px] flex flex-col justify-between group relative overflow-hidden cursor-pointer"
+      onClick={() => navigate(`/ensemble/${ensemble._id}`)}
+    >
       <div>
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-bold text-blue-900 group-hover:text-red-600 transition-colors">
-            {name}
+        <div className="flex justify-between items-center">
+          <h3 className="text-xl font-bold transition-colors group-hover:opacity-80" style={{ color: '#343B5D' }}>
+            {ensemble.name}
           </h3>
-          {isCreator && (
-            <span className="px-2 py-1 bg-blue-100 text-blue-900 text-xs font-semibold rounded-full">
-              Creator
-            </span>
-          )}
-          {isMember && !isCreator && (
-            <span className="px-2 py-1 bg-green-100 text-green-900 text-xs font-semibold rounded-full">
-              Member
-            </span>
-          )}
+          
         </div>
-        <p className="text-gray-700">
-          {description}
-        </p>
-      </div>
-      
-      <div className="flex justify-end mt-6 pt-4 border-t border-gray-100 gap-3">
-        {!isCreator && !isMember && (
-          <button
-            onClick={onJoin}
-            className="flex items-center px-4 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md"
-          >
-            <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
-            Join
-          </button>
-        )}
-        {isCreator && (
-          <button
-            onClick={onDelete}
-            className="flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500 transition-colors shadow-md"
-          >
-            <FontAwesomeIcon icon={faTrash} className="mr-2" />
-            Delete
-          </button>
-        )}
-        {isMember && !isCreator && (
-          <button
-            onClick={onLeave}
-            className="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-400 transition-colors shadow-md"
-          >
-            <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />
-            Leave
-          </button>
+
+        {/* Status */}
+        <div className="mt-4 flex items-center">
+          <FontAwesomeIcon 
+            icon={faUserGroup} 
+            className={`mr-2 ${isComplete ? 'text-gray-500' : 'text-yellow-600'}`}
+          />
+          <span className={`text-sm font-medium ${isComplete ? 'text-gray-500' : 'text-yellow-600'}`}>
+            {isComplete 
+              ? 'Ensemble complete' 
+              : `Looking for ${openPositions.length} position${openPositions.length !== 1 ? 's' : ''}`
+            }
+          </span>
+        </div>
+
+        {/* Needed Instruments */}
+        {!isComplete && (
+          <div className="mt-2">
+            <div className="flex flex-wrap gap-2">
+              {uniqueInstruments.map((instrument, index) => (
+                <span 
+                  key={index}
+                  className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded"
+                >
+                  <FontAwesomeIcon icon={faMusic} className="mr-1 text-gray-500" />
+                  {instrument}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
       </div>
+
+      <div className="flex justify-end mt-6 pt-4 border-t border-gray-100 relative z-10 w-4/5">
+      </div>
+
+      {/* Watermark Icon */}
+      <FontAwesomeIcon 
+        icon={faGuitar}
+        className="absolute -bottom-4 -right-4 text-gray-200 text-8xl transform rotate-12 scale-x-[-1]"
+      />
     </div>
   );
 };

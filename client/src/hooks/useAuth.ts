@@ -1,8 +1,11 @@
+import { FrontendUser } from '@packages/types';
+import { jwtDecode } from 'jwt-decode';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { UserDetails, userDetailsService } from '@/services/userDetails.service';
 
-interface User {
-  id: string;
+interface JwtPayload {
+  sub: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -11,33 +14,42 @@ interface User {
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const [user, setUser] = useState<FrontendUser | null>(null)
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-    if (token && storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-    
-      if (!parsedUser.createdAt) {
-        console.warn('createdAt is missing or invalid');
-      } else {
-        parsedUser.createdAt = new Date(parsedUser.createdAt); 
-      }
-  
+    if (token) {
       setIsAuthenticated(true);
-      setUser(parsedUser);
+      const decoded = jwtDecode<JwtPayload>(token);
+      setUser({
+        id: decoded.sub,
+        email: decoded.email,
+        firstName: decoded.firstName,
+        lastName: decoded.lastName,
+        createdAt: decoded.createdAt
+      });
+      console.log('Decoded token:', decoded);
     }
   }, []);
-  
+
+  const fetchUserDetails = async (id: string) => {
+    const userDet = await userDetailsService.getUserDetails(id)
+    setUserDetails(userDet)
+  }
+
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserDetails(user.id)
+    }
+  }, [user])
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
     setIsAuthenticated(false);
-    setUser(null);
     navigate('/login');
   };
-  return { isAuthenticated, user, logout };
+
+  return { isAuthenticated, user, userDetails, logout, fetchUserDetails };
 };

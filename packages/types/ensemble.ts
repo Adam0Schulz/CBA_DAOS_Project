@@ -1,17 +1,19 @@
 import { Document, Types } from "mongoose";
-import { User } from "./user";
+import {Position, PositionCore} from "./position";
 
 export interface Ensemble extends Document {
   name: string;
   description: string;
-  createdBy: Types.ObjectId | User;
-  members: Types.ObjectId[] | User[];
+  positions: Types.ObjectId[] | Position[];
 }
 
 export interface EnsembleCore {
   _id?: string;
   name: string;
   description: string;
-  createdBy: string; // User ID
-  members: string[]; // Array of User IDs
+  positions: PositionCore[];
+}
+export interface EnsembleIn extends EnsembleCore{
+  userId: string;
+  instrumentId: string;
 }

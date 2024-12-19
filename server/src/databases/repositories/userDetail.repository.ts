@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { UserDetail } from '../schemas/userDetail.schema';
 
 @Injectable()
@@ -9,25 +9,48 @@ export class UserDetailRepository {
     @InjectModel('UserDetail') private userDetailModel: Model<UserDetail>,
   ) {}
 
-  async createUserDetail(data: any): Promise<UserDetail> {
-    const newUserDetail = new this.userDetailModel(data);
-    return newUserDetail.save();
+  async createUserDetail(data: Partial<UserDetail>): Promise<UserDetail> {
+    const userDetail = new this.userDetailModel(data);
+    return userDetail.save();
   }
 
-  async findUserDetailByUserId(userId: string): Promise<UserDetail | null> {
+  async findUserDetailByUserId(userId: Types.ObjectId): Promise<UserDetail | null> {
     return this.userDetailModel.findOne({ userId }).exec();
   }
 
-  async updateUserDetail(
-    id: string,
-    updateData: Partial<UserDetail>,
-  ): Promise<UserDetail | null> {
+  async findUserDetailByUserIdWithApplication(userId: Types.ObjectId): Promise<UserDetail | null> {
     return this.userDetailModel
-      .findByIdAndUpdate(id, updateData, { new: true })
+      .findOne({ userId })
+      .populate({
+        path: 'applicationId',
+        model: 'Application',
+        select: 'message createdAt positionId'
+      })
       .exec();
   }
 
-  async deleteUserDetail(id: string): Promise<UserDetail | null> {
-    return this.userDetailModel.findByIdAndDelete(id).exec();
+  async findUserDetailById(id: Types.ObjectId): Promise<UserDetail | null> {
+    return this.userDetailModel.findById(id).exec();
+  }
+
+  async updateUserDetail(
+    userId: Types.ObjectId,
+    updateData: Partial<UserDetail>,
+  ): Promise<UserDetail | null> {
+    return this.userDetailModel
+      .findOneAndUpdate(
+        { userId },
+        updateData,
+        { new: true, runValidators: true }
+      )
+      .exec();
+  }
+
+  async deleteUserDetail(userId: Types.ObjectId): Promise<UserDetail | null> {
+    return this.userDetailModel.findOneAndDelete({ userId }).exec();
+  }
+
+  async findAllUserDetails(): Promise<UserDetail[]> {
+    return this.userDetailModel.find().exec();
   }
 }
