@@ -19,3 +19,11 @@ export const UserDetailSchema = new Schema<UserDetail>({
   isOpenToWork: { type: Boolean, default: false },
   lastLoggedIn: { type: Date, default: null, required: false }
 });
+
+// Add a virtual getter for the application field
+UserDetailSchema.virtual('application', {
+  ref: 'Application',
+  localField: 'applicationId',
+  foreignField: '_id',
+  justOne: true
+});

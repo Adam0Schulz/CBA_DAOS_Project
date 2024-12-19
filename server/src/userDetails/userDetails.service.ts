@@ -12,7 +12,7 @@ export class UserDetailsService {
   }
 
   async getUserDetailByUserId(userId: Types.ObjectId) {
-    return this.userDetailRepository.findUserDetailByUserId(userId);
+    return this.userDetailRepository.findUserDetailByUserIdWithApplication(userId);
   }
 
   async updateUserDetail(userId: Types.ObjectId, updateData: Partial<UserDetail>) {

@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { EnsemblesService } from './ensembles.service';
-import { EnsembleCore } from '@packages/types';
+import {EnsembleCore, EnsembleIn} from '@packages/types';
 
 @Controller('ensembles')
 export class EnsemblesController {
@@ -8,18 +8,16 @@ export class EnsemblesController {
 
   @Get()
   async getAllEnsembles() {
+    console.log('HELLO')
     return this.ensemblesService.getAllEnsembles();
   }
-  @Get('user/:userId')
-  async getEnsemblesByUser(@Param('userId') userId: string) {
-    return this.ensemblesService.getEnsemblesByUser(userId);
-  }
+  // @Get('user/:userId')
+  // async getEnsemblesByUser(@Param('userId') userId: string) {
+  //   return this.ensemblesService.getEnsemblesByUser(userId);
+  // }
   @Post()
-  async createEnsemble(@Body() data: Omit<EnsembleCore, 'members'>) {
-    return this.ensemblesService.createEnsemble({
-      ...data,
-      members: [data.createdBy], 
-    });
+  async createEnsemble(@Body() data: EnsembleIn) {
+    return this.ensemblesService.createEnsemble(data);
   }
 
   @Get(':id')

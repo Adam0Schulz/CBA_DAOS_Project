@@ -8,6 +8,8 @@ import { DatabaseService } from './database.service';
 import { UserRepository } from './repositories/user.repository';
 import { UserDetailRepository } from './repositories/userDetail.repository';
 import { EnsembleRepository } from './repositories/ensemble.repository';
+import {PositionSchema} from "./schemas/position.schema";
+import {PositionRepository} from "./repositories/position.repository";
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { EnsembleRepository } from './repositories/ensemble.repository';
       { name: 'User', schema: UserSchema },
       { name: 'UserDetail', schema: UserDetailSchema },
       { name: 'Ensemble', schema: EnsembleSchema },
+      { name: 'Position', schema: PositionSchema },
     ]),
   ],
   providers: [
@@ -30,12 +33,14 @@ import { EnsembleRepository } from './repositories/ensemble.repository';
     UserRepository,
     UserDetailRepository,
     EnsembleRepository,
+    PositionRepository
   ],
   exports: [
     DatabaseService,
     UserRepository,
     UserDetailRepository,
     EnsembleRepository,
+    PositionRepository
   ],
 })
 export class DatabaseModule {}

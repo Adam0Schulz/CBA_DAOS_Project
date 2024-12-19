@@ -5,7 +5,7 @@ export interface UserDetail extends Document {
   address?: string;
   description?: string;
   instrumentId?: Types.ObjectId;
-  applicationId?: Types.ObjectId;
+  application?: Types.ObjectId;
   isOpenToWork: boolean;
   lastLoggedIn?: Date | null;
 }

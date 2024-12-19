@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { ensemblesService } from "@/services/ensembles.service";
 import { instrumentsService } from "@/services/instruments.service";
-import { userDetailsService } from "@/services/userDetails.service";
+import {UserDetails, userDetailsService} from "@/services/userDetails.service";
 import { EnsembleCore } from "@packages/types";
 import { FrontendUser } from "@packages/types";
 import EditUserProfile from "@/components/EditUserProfile/EditUserProfile";
+import EnsembleCard from "@/components/EnsembleCards";
 import type { Instrument } from "@/services/instruments.service";
 import { jwtDecode } from "jwt-decode";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,7 +23,7 @@ interface JwtPayload {
 const ProfilePage: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
   const [user, setUser] = useState<FrontendUser | null>(null);
-  const [userDetails, setUserDetails] = useState<any>(null);
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [userEnsembles, setUserEnsembles] = useState<EnsembleCore[]>([]);
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,8 +60,8 @@ const ProfilePage: React.FC = () => {
   const fetchUserEnsembles = async (userId: string) => {
     try {
       const allEnsembles = await ensemblesService.getAllEnsembles();
-      const filteredEnsembles = allEnsembles.filter((ensemble) =>
-        ensemble.members.includes(userId)
+      const filteredEnsembles = allEnsembles.filter((ensemble) => 
+        ensemble.positions.some(pos => pos.userId === userId)
       );
       setUserEnsembles(filteredEnsembles);
       setError(null);
@@ -85,6 +86,7 @@ const ProfilePage: React.FC = () => {
     try {
       const details = await userDetailsService.getUserDetails(userId);
       setUserDetails(details);
+      console.log("user details", details)
     } catch (err) {
       console.error("Failed to load user details:", err);
     }
@@ -139,8 +141,10 @@ const ProfilePage: React.FC = () => {
 
       // Logout and redirect
       logout();
-    } catch (err: any) {
-      setDeleteError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setDeleteError(err.message);
+      }
       console.error('Account deletion error:', err);
     }
   };
@@ -172,11 +176,11 @@ const ProfilePage: React.FC = () => {
         {/* Profile Information */}
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-blue-900">Profile</h1>
+            <h1 className="text-2xl font-bold text-blue-900" style={{ color: '#343B5D' }}>Profile</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-[#F4F5F4] p-4 rounded-lg">
                 <h2 className="text-lg font-semibold text-gray-700 mb-4">Personal Information</h2>
                 <div className="space-y-3">
                   <p className="flex items-center">
@@ -204,7 +208,7 @@ const ProfilePage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-gray-50 p-4 rounded-lg">
+              <div className="bg-[#F4F5F4] p-4 rounded-lg">
                 <h2 className="text-lg font-semibold text-gray-700 mb-4">Additional Details</h2>
                 <div className="space-y-3">
                   <div>
@@ -219,7 +223,7 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-gray-50 p-4 rounded-lg h-fit">
+            <div className="bg-[#F4F5F4] p-4 rounded-lg h-fit">
               <h2 className="text-lg font-semibold text-red-700 mb-4">Account Management</h2>
               <div className="space-y-3">
                 <div className="bg-white p-3 rounded-lg shadow-sm flex justify-between items-center">
@@ -227,6 +231,7 @@ const ProfilePage: React.FC = () => {
                     <FontAwesomeIcon 
                       icon={faEdit} 
                       className="text-blue-500 text-xl"
+                      style={{ color: '#343B5D' }}
                     />
                     <div>
                       <p className="font-medium text-gray-800">Edit Profile</p>
@@ -236,6 +241,7 @@ const ProfilePage: React.FC = () => {
                   <button
                     onClick={() => setIsEditModalOpen(true)}
                     className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors w-24 text-center"
+                    style={{ backgroundColor: '#343B5D' }}
                   >
                     Edit
                   </button>
@@ -246,6 +252,7 @@ const ProfilePage: React.FC = () => {
                     <FontAwesomeIcon 
                       icon={faTrash} 
                       className="text-red-500 text-xl"
+                      style={{ color: '#BE1F2E' }}
                     />
                     <div>
                       <p className="font-medium text-gray-800">Delete Account</p>
@@ -255,6 +262,7 @@ const ProfilePage: React.FC = () => {
                   <button
                     onClick={() => setIsDeleteModalOpen(true)}
                     className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors w-24 text-center"
+                    style={{ backgroundColor: '#BE1F2E' }}
                   >
                     Delete
                   </button>
@@ -262,15 +270,15 @@ const ProfilePage: React.FC = () => {
               </div>
             </div>
 
-            <div className="bg-gray-50 p-4 rounded-lg h-fit">
+            <div className="bg-[#F4F5F4] p-4 rounded-lg h-fit">
               <h2 className="text-lg font-semibold text-gray-700 mb-4">My Ensembles</h2>
               {userEnsembles.length > 0 ? (
-                <div className="space-y-3">
+                <div className="grid gap-4">
                   {userEnsembles.map((ensemble) => (
-                    <div key={ensemble._id} className="bg-white p-3 rounded-lg shadow-sm">
-                      <p className="font-medium text-gray-800">{ensemble.name}</p>
-                      <p className="text-sm text-gray-600 mt-1">{ensemble.description || 'No description'}</p>
-                    </div>
+                    <EnsembleCard
+                      key={ensemble._id}
+                      ensemble={ensemble}
+                    />
                   ))}
                 </div>
               ) : (
@@ -286,6 +294,7 @@ const ProfilePage: React.FC = () => {
         onClose={() => setIsEditModalOpen(false)}
         onSave={handleSaveProfile}
         currentUser={user}
+        // @ts-ignore
         currentDetails={userDetails}
         instruments={instruments}
       />

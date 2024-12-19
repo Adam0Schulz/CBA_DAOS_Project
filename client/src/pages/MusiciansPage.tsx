@@ -3,10 +3,8 @@ import { MusicianWithInstrument } from "@packages/types";
 import { userService } from "@/services/users.service";
 import { userDetailsService } from "@/services/userDetails.service";
 import { instrumentsService, Instrument } from "@/services/instruments.service";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch, faMusic, faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { MusicianCard } from "@/components/MusicianCard";
-import { User, UserDetail } from "@packages/types"; 
+import { User, UserDetail } from "@packages/types";
 import { useAuth } from "@/hooks/useAuth";
 
 const ITEMS_PER_PAGE = 9;
@@ -36,10 +34,10 @@ const MusiciansPage: React.FC = () => {
 
         const combinedData = users.map((user: User) => {
           const details = userDetails.find((detail: UserDetail) => detail.userId === user._id);
-          const instrument = details?.instrumentId 
+          const instrument = details?.instrumentId
             ? instrumentsList.find(i => i._id === details.instrumentId)
             : undefined;
-          
+
           return {
             ...user,
             details,
@@ -63,7 +61,7 @@ const MusiciansPage: React.FC = () => {
   useEffect(() => {
     const filtered = musicians.filter((musician) => {
       const searchString = searchTerm.toLowerCase();
-      const matchesSearch = 
+      const matchesSearch =
         musician.firstName.toLowerCase().includes(searchString) ||
         musician.lastName.toLowerCase().includes(searchString) ||
         musician.email.toLowerCase().includes(searchString) ||

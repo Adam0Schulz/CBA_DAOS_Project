@@ -18,6 +18,17 @@ export class UserDetailRepository {
     return this.userDetailModel.findOne({ userId }).exec();
   }
 
+  async findUserDetailByUserIdWithApplication(userId: Types.ObjectId): Promise<UserDetail | null> {
+    return this.userDetailModel
+      .findOne({ userId })
+      .populate({
+        path: 'applicationId',
+        model: 'Application',
+        select: 'message createdAt positionId'
+      })
+      .exec();
+  }
+
   async findUserDetailById(id: Types.ObjectId): Promise<UserDetail | null> {
     return this.userDetailModel.findById(id).exec();
   }
