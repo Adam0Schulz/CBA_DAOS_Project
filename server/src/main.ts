@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DataSeederService } from './data/seed.service';
-import * as session from 'express-session';
 import * as passport from 'passport';
 
 async function bootstrap() {
@@ -10,18 +9,8 @@ async function bootstrap() {
   // Enable CORS
   app.enableCors();
 
-  // Configure session middleware
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET,
-      saveUninitialized: false,
-      cookie: { secure: false },
-    }),
-  );
-
-  // Initialize Passport and session handling
+  // Initialize Passport
   app.use(passport.initialize());
-  app.use(passport.session());
 
   // Dummy data service
   const seeder = app.get(DataSeederService);

@@ -6,9 +6,10 @@ import { DatabaseModule } from './databases/database.module';
 import { UsersModule } from './users/users.module';
 import { EnsemblesModule } from './ensembles/ensembles.module';
 import { DataSeederService } from './data/seed.service';
-import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
 import {PositionsModule} from "./positions/positions.module";
+import { UserDetailsModule } from './userDetails/userDetails.module';
+import { InstrumentModule } from './instruments/instrument.module';
 
 @Module({
   imports: [
@@ -20,6 +21,8 @@ import {PositionsModule} from "./positions/positions.module";
     EnsemblesModule,
     PositionsModule,
     AuthModule,
+    InstrumentModule,
+    UserDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService, DataSeederService],

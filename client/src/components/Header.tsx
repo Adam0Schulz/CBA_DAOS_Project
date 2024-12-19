@@ -45,7 +45,7 @@ const Header: React.FC = () => {
             Musicians
           </NavLink>
           <Link to="/profile">
-            <button 
+            <button
               className="text-lg text-white px-6 py-2 rounded-md transition duration-300 hover:opacity-90"
               style={{ backgroundColor: '#343B5D' }}
             >

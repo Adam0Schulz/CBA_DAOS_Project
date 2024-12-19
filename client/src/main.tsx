@@ -4,9 +4,9 @@ import "./index.css";
 import HomePage from "./pages/HomePage.tsx";
 import EnsemblePage from "./pages/EnsemblesPage.tsx";
 import LoginPage from "@/pages/LoginPage.tsx";
-import ProfilePage from "./pages/Profile.tsx";
 import MusiciansPage from "./pages/MusiciansPage.tsx";
 import EnsembleDetailPage from "./pages/EnsembleDetailPage.tsx";
+import ProfilePage from "./pages/ProfilePage.tsx";
 import Header from "./components/Header.tsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 

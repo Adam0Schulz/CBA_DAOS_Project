@@ -1,0 +1,58 @@
+### Variables
+@baseUrl = http://localhost:5000
+@userId = 67603229d67cb2d13a630884
+@instrumentId = 675bf1b7979320c15d93c39a
+@applicationId = 675bf1b7979320c15d93c39a
+
+### Login first to get token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@admin.com",
+    "password": "admin1234"
+}
+
+###
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsInN1YiI6IjY3NjJjNzk4ZDc3NDEyNmYxODUwMTAzMiIsImZpcnN0TmFtZSI6IkFkbWluIiwibGFzdE5hbWUiOiJNciIsImNyZWF0ZWRBdCI6IjIwMjQtMTItMThUMTM6MDE6MTIuOTUyWiIsImlhdCI6MTczNDUyOTg1NiwiZXhwIjoxNzM0NjE2MjU2fQ.nlKO89VmGIy-VsmQOXd4D_A5UaONaLmBgbXeg60Gngw
+### Create user detail
+POST {{baseUrl}}/user-details
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "userId": "{{userId}}",
+  "address": "123 Test Street",
+  "description": "Test user description",
+  "instrumentId": "{{instrumentId}}",
+  "applicationId": "{{applicationId}}",
+  "isOpenToWork": true,
+  "lastLoggedIn": null
+}
+
+### Get all user details
+GET {{baseUrl}}/user-details
+Authorization: Bearer {{authToken}}
+
+### Get user detail by userId
+GET {{baseUrl}}/user-details/{{userId}}
+Authorization: Bearer {{authToken}}
+
+### Update user detail
+PATCH {{baseUrl}}/user-details/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "address": "456 Updated Street",
+  "description": "Updated description",
+  "instrumentId": "{{instrumentId}}",
+  "applicationId": "{{applicationId}}",
+  "isOpenToWork": true,
+  "lastLoggedIn": "2024-12-16T13:00:00.000Z"
+}
+
+### Delete user detail
+DELETE {{baseUrl}}/user-details/{{userId}}
+Authorization: Bearer {{authToken}}
