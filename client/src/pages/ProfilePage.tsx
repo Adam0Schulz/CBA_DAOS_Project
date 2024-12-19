@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { ensemblesService } from "@/services/ensembles.service";
 import { instrumentsService } from "@/services/instruments.service";
-import { userDetailsService } from "@/services/userDetails.service";
+import {UserDetails, userDetailsService} from "@/services/userDetails.service";
 import { EnsembleCore } from "@packages/types";
 import { FrontendUser } from "@packages/types";
 import EditUserProfile from "@/components/EditUserProfile/EditUserProfile";
@@ -22,7 +22,7 @@ interface JwtPayload {
 const ProfilePage: React.FC = () => {
   const { isAuthenticated, logout } = useAuth();
   const [user, setUser] = useState<FrontendUser | null>(null);
-  const [userDetails, setUserDetails] = useState<any>(null);
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [userEnsembles, setUserEnsembles] = useState<EnsembleCore[]>([]);
   const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,9 +59,7 @@ const ProfilePage: React.FC = () => {
   const fetchUserEnsembles = async (userId: string) => {
     try {
       const allEnsembles = await ensemblesService.getAllEnsembles();
-      const filteredEnsembles = allEnsembles.filter((ensemble) =>
-        ensemble.members.includes(userId)
-      );
+      const filteredEnsembles = allEnsembles.filter((ensemble) => !ensemble.positions.find(pos => pos.userId===userId));
       setUserEnsembles(filteredEnsembles);
       setError(null);
     } catch (err) {
@@ -139,8 +137,10 @@ const ProfilePage: React.FC = () => {
 
       // Logout and redirect
       logout();
-    } catch (err: any) {
-      setDeleteError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setDeleteError(err.message);
+      }
       console.error('Account deletion error:', err);
     }
   };

@@ -149,11 +149,17 @@ export const ensemblesService = {
     }
   },
 
-  async sendPositionApplication(ensembleId: string, positionId: string): Promise<void> {
+  async sendPositionApplication(positionId: string): Promise<void> {
     try {
-      const response = await fetch(`${API_URL}/ensembles/${ensembleId}/positions/${positionId}/apply`, {
+      const response = await fetch(`${API_URL}/applications`, {
         method: 'POST',
         credentials: 'include',
+        body: JSON.stringify({
+          positionId: positionId,
+          userId: "000",
+          message: "Hello Application",
+          createdAt: Date.now()
+        })
       });
       if (!response.ok) {
         throw new Error('Failed to send application');

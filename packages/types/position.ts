@@ -8,6 +8,7 @@ export interface Position extends Document {
     isOwner: boolean
 }
 export interface PositionCore {
+    _id: string,
     userId?: string,
     ensembleId: string,
     instrumentId: string,

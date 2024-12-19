@@ -1,15 +1,10 @@
-//@ts-nocheck
-
 import React, { useState, useEffect } from "react";
 import { FrontendUser, UserDetail } from "@packages/types";
-import { Types } from "mongoose";
-import { instrumentsService, Instrument } from "../../services/instruments.service";
-import { userService } from "../../services/users.service";
-import { userDetailsService } from "../../services/userDetails.service";
+import { instrumentsService, Instrument } from "@/services/instruments.service.ts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { getAuthHeader } from '../../utils/auth';
-import { useAuth } from '../../hooks/useAuth';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { getAuthHeader } from '@/utils/auth.ts';
+import {Types} from "mongoose";
 
 interface EditProfileFormProps {
   user: FrontendUser;
@@ -24,7 +19,6 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
   onSave,
   isSaving,
 }) => {
-  const { logout } = useAuth();
   const [formData, setFormData] = useState({
     firstName: user.firstName,
     lastName: user.lastName,
@@ -36,7 +30,6 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
   });
 
   const [instruments, setInstruments] = useState<Instrument[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [passwordData, setPasswordData] = useState({
@@ -57,8 +50,6 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
         setInstruments(fetchedInstruments);
       } catch (error) {
         console.error('Failed to fetch instruments:', error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -172,8 +163,10 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
         setSuccessMessage(null);
       }, 2000);
 
-    } catch (error: any) {
-      setPasswordError(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        setPasswordError(error.message);
+      }
     }
   };
 
@@ -253,7 +246,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
             <label className="block text-sm font-medium text-gray-700">Instrument</label>
             <select
               name="instrumentId"
-              value={formData.instrumentId}
+              value={formData.instrumentId as string}
               onChange={handleChange}
               className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm
               focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500

@@ -13,7 +13,7 @@ export class PositionRepository {
     return this.PositionModel.find().exec();
   }
 
-  async createPosition(data: PositionCore): Promise<Position> {
+  async createPosition(data: Omit<PositionCore, '_id'>): Promise<Position> {
     const newPosition = new this.PositionModel(data);
     return newPosition.save();
   }

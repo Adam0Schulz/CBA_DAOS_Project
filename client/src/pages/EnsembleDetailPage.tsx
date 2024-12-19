@@ -52,7 +52,7 @@ export default function EnsembleDetailPage() {
         
         setApplicationStatus({ loading: true, error: null, success: false });
         try {
-            await ensemblesService.sendPositionApplication(ensembleId, positionId);
+            await ensemblesService.sendPositionApplication(positionId);
             setApplicationStatus({ loading: false, error: null, success: true });
             
             // Refresh ensemble data after successful application
@@ -118,7 +118,7 @@ export default function EnsembleDetailPage() {
                                 userId={position.userId}
                                 isOwner={position.isOwner}
                                 canApply={!isUserInEnsemble && !!user && !position.userId}
-                                // onApply={() => handleApplyForPosition(position._id)}
+                                onApply={() => handleApplyForPosition(position._id)}
                             />
                         ))}
                     </div>

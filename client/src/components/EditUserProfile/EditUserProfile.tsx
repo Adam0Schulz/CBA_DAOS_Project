@@ -1,6 +1,6 @@
 //@ts-nocheck
 
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState } from "react";
 import { FrontendUser, UserDetail } from "@packages/types";
 import EditProfileForm from "./EditProfileForm";
 import { userService } from "@/services/users.service";
@@ -30,7 +30,7 @@ const EditUserProfile: React.FC<EditUserProfileProps> = ({
 
   const handleSave = async (
     userData: Partial<FrontendUser>,
-    userDetailsData: Partial<UserDetail>
+    userDetailsData: Partial<UserDetails>
   ) => {
     setIsSaving(true);
     setError(null);
