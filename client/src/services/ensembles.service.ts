@@ -149,15 +149,18 @@ export const ensemblesService = {
     }
   },
 
-  async sendPositionApplication(positionId: string): Promise<void> {
+  async sendPositionApplication(positionId: string, userId: string, message: string): Promise<void> {
     try {
       const response = await fetch(`${API_URL}/applications`, {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify({
           positionId: positionId,
-          userId: "000",
-          message: "Hello Application",
+          userId: userId,
+          message: message,
           createdAt: Date.now()
         })
       });

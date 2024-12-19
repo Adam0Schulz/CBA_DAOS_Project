@@ -3,15 +3,7 @@ import { Schema } from 'mongoose';
 
 export const ApplicationSchema = new Schema<Application>({
     message: { type: String, required: true },
-    createdAt: { type: Date, required: true}
-}, {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
-});
-
-// Virtual populate to get positions
-ApplicationSchema.virtual('position', {
-    ref: 'Position',
-    localField: '_id',
-    foreignField: 'positionId'
+    createdAt: { type: Date, required: true },
+    positionId: { type: Schema.Types.ObjectId, ref: 'Position', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 });

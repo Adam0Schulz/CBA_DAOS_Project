@@ -16,6 +16,7 @@ export class ApplicationsService {
   }
 
   async createApplication(data: ApplicationIn) {
+    console.log('service', data)
     const application = await this.applicationRepository.createApplication({...data});
     await this.userDetailRepository.updateUserDetail(new Types.ObjectId(data.userId),{
       applicationId: application.id,
@@ -33,5 +34,9 @@ export class ApplicationsService {
 
   async deleteApplication(id: string) {
     return this.applicationRepository.deleteApplication(id);
+  }
+
+  async getApplicationsByPosition(positionId: string) {
+    return this.applicationRepository.findApplicationsByPositionId(positionId);
   }
 }

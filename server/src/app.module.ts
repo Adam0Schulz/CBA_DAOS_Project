@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import {PositionsModule} from "./positions/positions.module";
 import { UserDetailsModule } from './userDetails/userDetails.module';
 import { InstrumentModule } from './instruments/instrument.module';
+import { ApplicationsModule } from './applications/applications.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { InstrumentModule } from './instruments/instrument.module';
     AuthModule,
     InstrumentModule,
     UserDetailsModule,
+    ApplicationsModule
   ],
   controllers: [AppController],
   providers: [AppService, DataSeederService],

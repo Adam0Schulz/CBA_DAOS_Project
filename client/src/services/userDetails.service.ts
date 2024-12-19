@@ -1,3 +1,4 @@
+import { ApplicationCore } from '@packages/types';
 import { getAuthHeader } from '../utils/auth';
 import { Types } from 'mongoose';
 
@@ -9,6 +10,7 @@ export interface UserDetails {
   address?: string;
   description?: string;
   instrumentId?: string;
+  applicationId?: ApplicationCore
   isOpenToWork: boolean;
 }
 
@@ -50,6 +52,7 @@ export const userDetailsService = {
         description: data.description || '',
         instrumentId: data.instrumentId || '',
         isOpenToWork: data.isOpenToWork || false,
+        applicationId: data.applicationId
       };
     } catch (error) {
       console.error('Error fetching user details:', error);

@@ -11,8 +11,9 @@ export default function EnsembleDetailPage() {
     const [ensemble, setEnsemble] = useState<EnsembleCore | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const { user } = useAuth();
-
+    const { user, userDetails, fetchUserDetails } = useAuth();
+    
+    const isEnsembleOwner = ensemble?.positions.some(position => position.userId === user?.id && position.isOwner);
     const isUserInEnsemble = ensemble?.positions.some(position => position.userId === user?.id);
 
     const [applicationStatus, setApplicationStatus] = useState<{
@@ -47,13 +48,16 @@ export default function EnsembleDetailPage() {
         fetchEnsemble();
     }, [ensembleId]);
 
-    const handleApplyForPosition = async (positionId: string) => {
-        if (!ensembleId) return;
+    const handleApplyForPosition = async (positionId: string, message: string) => {
+        if (!ensembleId || !user?.id) return;
         
         setApplicationStatus({ loading: true, error: null, success: false });
         try {
-            await ensemblesService.sendPositionApplication(positionId);
+            await ensemblesService.sendPositionApplication(positionId, user.id, message);
             setApplicationStatus({ loading: false, error: null, success: true });
+            
+            // Refresh user details to update the application status
+            await fetchUserDetails(user.id);
             
             // Refresh ensemble data after successful application
             const updatedEnsemble = await ensemblesService.getEnsembleById(ensembleId);
@@ -115,10 +119,13 @@ export default function EnsembleDetailPage() {
                             <PositionCard
                                 key={index}
                                 instrumentId={position.instrumentId}
+                                positionId={position._id}
                                 userId={position.userId}
                                 isOwner={position.isOwner}
-                                canApply={!isUserInEnsemble && !!user && !position.userId}
-                                onApply={() => handleApplyForPosition(position._id)}
+                                isEnsembleOwner={isEnsembleOwner === undefined ? false : isEnsembleOwner}
+                                canApply={!isUserInEnsemble && !!user && !position.userId && !userDetails?.applicationId}
+                                userDetails={userDetails}
+                                onApply={(message) => handleApplyForPosition(position._id, message)}
                             />
                         ))}
                     </div>

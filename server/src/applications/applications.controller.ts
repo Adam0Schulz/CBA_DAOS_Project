@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Query } from '@nestjs/common';
 import { ApplicationsService } from './applications.service';
 import {ApplicationCore, ApplicationIn} from '@packages/types';
 
@@ -7,8 +7,10 @@ export class ApplicationsController {
   constructor(private readonly applicationsService: ApplicationsService) {}
 
   @Get()
-  async getAllApplications() {
-    console.log('HELLO')
+  async getAllApplications(@Query('positionId') positionId?: string) {
+    if (positionId) {
+      return this.applicationsService.getApplicationsByPosition(positionId);
+    }
     return this.applicationsService.getAllApplications();
   }
   // @Get('user/:userId')
@@ -17,6 +19,7 @@ export class ApplicationsController {
   // }
   @Post()
   async createApplication(@Body() data: ApplicationIn) {
+    console.log('controller', data)
     return this.applicationsService.createApplication(data);
   }
 
