@@ -1,4 +1,5 @@
 import { User } from "@packages/types";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   const handleFetch = async () => {
@@ -19,22 +20,10 @@ function HomePage() {
           The place where amateur musicians connect and play music together.
           </p>
           <div className="flex items-center gap-4">
-            {/* Dropdown */}
-            <select
-              className="text-gray-700 text-lg border border-gray-300 rounded-lg px-6 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 w-60"
-              defaultValue=""
-            >
-              <option value="" disabled hidden>
-                Choose instrument
-              </option>
-              <option value="guitar">Guitar</option>
-              <option value="piano">Piano</option>
-              <option value="violin">Violin</option>
-            </select>
             {/* Button */}
-            <button className="bg-blue-900 text-white text-lg font-medium px-8 py-3 rounded-lg hover:bg-red-700 transition duration-300">
+            <Link to="/ensembles" className="bg-blue-900 text-white text-lg font-medium px-8 py-3 rounded-lg hover:bg-red-700 transition duration-300">
               See ensembles
-            </button>
+            </Link>
           </div>
         </div>
       </main>
