@@ -280,6 +280,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
               type="button"
               onClick={() => setShowChangePassword(true)}
               className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-500"
+              style={{'color': "rgb(52, 59, 93)"}}
             >
               Change Password
             </button>
@@ -288,6 +289,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
                 type="submit"
                 disabled={isSaving}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                style={{'backgroundColor': "rgb(52, 59, 93)"}}
               >
                 {isSaving ? "Saving..." : "Save Changes"}
               </button>
