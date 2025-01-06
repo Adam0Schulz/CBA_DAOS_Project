@@ -67,15 +67,10 @@ export class UsersController {
 
   @Delete(':id')
   async deleteUser(@Request() req, @Param('id') userId: string) {
-    // Debug logging
-    console.log('Delete Request User:', req.user);
-    console.log('Requested User ID to Delete:', userId);
-
     // Ensure the user can only delete their own account
     if (req.user.id !== userId) {
       throw new UnauthorizedException('You can only delete your own account');
     }
-
     await this.usersService.deleteUser(userId);
     return { message: 'Account successfully deleted' };
   }

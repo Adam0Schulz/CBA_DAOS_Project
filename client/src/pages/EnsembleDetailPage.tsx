@@ -59,8 +59,6 @@ export default function EnsembleDetailPage() {
             
             // Refresh user details to update the application status
             await fetchUserDetails(user.id);
-            
-            // Refresh ensemble data after successful application
             const updatedEnsemble = await ensemblesService.getEnsembleById(ensembleId);
             setEnsemble(updatedEnsemble);
         } catch (err) {
@@ -85,7 +83,6 @@ export default function EnsembleDetailPage() {
             } : null);
         } catch (err) {
             console.error('Error adding position:', err);
-            // You might want to show this error to the user in a more user-friendly way
         }
     };
 

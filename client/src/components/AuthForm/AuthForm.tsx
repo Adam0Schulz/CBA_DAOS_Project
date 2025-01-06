@@ -109,12 +109,9 @@ const AuthForm: React.FC = () => {
       const authData = data as AuthResponse;
       
       if (isLogin) {
-        // Store only the token
         localStorage.setItem('token', authData.access_token);
-        // Redirect to main page after login
         window.location.href = '/';
       } else {
-        // For registration, just switch to login mode
         setIsLogin(true);
         setError(null);
         setSuccessMessage("Registration successful! You can now log in with your credentials.");
