@@ -32,7 +32,10 @@ function HomePage() {
               <option value="violin">Violin</option>
             </select>
             {/* Button */}
-            <button className="bg-blue-900 text-white text-lg font-medium px-8 py-3 rounded-lg hover:bg-red-700 transition duration-300">
+            <button 
+              className="bg-blue-900 text-white text-lg font-medium px-8 py-3 rounded-lg hover:bg-red-700 transition duration-300"
+              style={{"backgroundColor": "rgb(52, 59, 93)"}}
+            >
               See ensembles
             </button>
           </div>
