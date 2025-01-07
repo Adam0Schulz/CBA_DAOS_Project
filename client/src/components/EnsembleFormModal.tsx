@@ -19,7 +19,7 @@ const EnsembleFormModal: React.FC<EnsembleFormModalProps> = ({
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    instrumentId: "1"
+    instrumentId: "Double Bass"
   });
 
   if (!isOpen) return null;
@@ -30,7 +30,7 @@ const EnsembleFormModal: React.FC<EnsembleFormModalProps> = ({
       ...formData,
       userId: userId
     });
-    setFormData({ name: "", description: "", instrumentId: "1" }); // Reset form
+    setFormData({ name: "", description: "", instrumentId: "Double Bass" }); // Reset form
   };
 
   return (

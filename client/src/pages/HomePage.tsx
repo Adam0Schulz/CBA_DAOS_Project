@@ -13,7 +13,7 @@ function HomePage() {
 
   return (
     <>
-      <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <main className="flex flex-col items-center justify-center min-h-screen bg-white">
         {/* Header Section */}
         <div className="flex flex-row items-center justify-center gap-16 max-w-7xl mx-auto px-4">
           <div className="flex flex-col items-start space-y-4">
