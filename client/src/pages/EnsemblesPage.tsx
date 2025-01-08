@@ -7,6 +7,7 @@ import { EnsembleCore, EnsembleIn } from "@packages/types";
 import { ensemblesService } from "@/services/ensembles.service";
 
 const EnsemblePage: React.FC = () => {
+  const { isAuthenticated, user } = useAuth();
   const [ensembles, setEnsembles] = useState<EnsembleCore[]>([]);
   const [filteredEnsembles, setFilteredEnsembles] = useState<EnsembleCore[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,7 +16,6 @@ const EnsemblePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "myEnsembles" | "others">("all");
   const [showCompleteEnsembles, setShowCompleteEnsembles] = useState(true);
-  const { user } = useAuth();
 
   useEffect(() => {
     fetchEnsembles();
@@ -137,13 +137,15 @@ const EnsemblePage: React.FC = () => {
                   />
                 </div>
 
-                <button
-                  onClick={handleAddEnsemble}
-                  className="w-full sm:w-auto text-white px-6 py-2 rounded-lg shadow hover:opacity-90 transition-colors"
-                  style={{ backgroundColor: '#343B5D' }}
-                >
-                  Add New Ensemble
-                </button>
+                {isAuthenticated && (
+                  <button
+                    onClick={handleAddEnsemble}
+                    className="w-full sm:w-auto text-white px-6 py-2 rounded-lg shadow hover:opacity-90 transition-colors"
+                    style={{ backgroundColor: '#343B5D' }}
+                  >
+                    Add New Ensemble
+                  </button>
+                )}
               </div>
             </div>
           </div>

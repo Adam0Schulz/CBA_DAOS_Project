@@ -20,7 +20,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
   async getAllUsers() {
     return this.usersService.getAllUsers();
   }
@@ -31,28 +30,12 @@ export class UsersController {
     return this.usersService.getUserById(trimmedId);
   }
 
-  // @Get('profile/:id')
-  // async getProfile(@Param('id') id: string) {
-  //   const user = await this.usersService.getUserById(id);
-  //   if (!user) {
-  //     throw new Error('User not found');
-  //   }
-  //   return {
-  //     _id: user._id,
-  //     firstName: user.firstName,
-  //     lastName: user.lastName,
-  //     email: user.email,
-  //     createdAt: user.createdAt,
-  //   };
-  // }
-
   @Put(':id')
   async updateUserProfile(@Param('id') id: string, @Body() updateData: Partial<User>): Promise<{ user: User, token: string }> {
     return await this.usersService.updateUserProfile(id, updateData);
   }
 
   @Post(':id/change-password')
-  @UseGuards(JwtAuthGuard)
   async changePassword(
     @Param('id') id: string,
     @Body('oldPassword') oldPassword: string,
@@ -67,7 +50,6 @@ export class UsersController {
 
   @Delete(':id')
   async deleteUser(@Request() req, @Param('id') userId: string) {
-
     // Make sure the user can only delete their own account
     if (req.user.id !== userId) {
       throw new UnauthorizedException('You can only delete your own account');
