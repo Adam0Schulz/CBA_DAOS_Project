@@ -30,7 +30,6 @@ export const useAuth = () => {
         lastName: decoded.lastName,
         createdAt: decoded.createdAt
       });
-      console.log('Decoded token:', decoded);
     }
   }, []);
 

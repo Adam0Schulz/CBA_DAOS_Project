@@ -7,8 +7,8 @@ import { ApplicationSchema } from '../databases/schemas/application.schema';
 import {PositionSchema} from "../databases/schemas/position.schema";
 import {PositionsService} from "../positions/positions.service";
 import {PositionRepository} from "../databases/repositories/position.repository";
-import { UserDetailSchema } from 'src/databases/schemas/userDetail.schema';
-import { UserDetailRepository } from 'src/databases/repositories/userDetail.repository';
+import { UserDetailSchema } from '../databases/schemas/userDetail.schema';
+import { UserDetailRepository } from '../databases/repositories/userDetail.repository';
 
 @Module({
   imports: [

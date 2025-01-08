@@ -11,12 +11,10 @@ export class ApplicationRepository {
 
     async findAll(): Promise<Application[]> {
         const applications = await this.applicationModel.find().exec();
-        console.log('Applications fetched:', applications);
         return applications;
     }
 
     async createApplication(data: ApplicationCore): Promise<Application> {
-        console.log('repo', data)
         const newApplication = new this.applicationModel(data);
         return newApplication.save();
     }

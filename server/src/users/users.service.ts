@@ -17,7 +17,6 @@ export class UsersService {
 
 
   async getAllUsers() {
-    console.log('UsersService - Fetching all users');
     return await this.userRepository.findAllUsers();
   }
 
@@ -27,7 +26,6 @@ export class UsersService {
   }
 
   async getUserById(id: string) {
-    console.log('UsersService - Fetching user by ID:', id);
     return await this.userRepository.findUserById(id);
   }
 

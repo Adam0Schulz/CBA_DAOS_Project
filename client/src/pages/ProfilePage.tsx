@@ -43,7 +43,6 @@ const ProfilePage: React.FC = () => {
         lastName: decoded.lastName,
         createdAt: decoded.createdAt
       });
-      console.log('Decoded token:', decoded);
     }
   }, [isAuthenticated]);
 
@@ -86,7 +85,6 @@ const ProfilePage: React.FC = () => {
     try {
       const details = await userDetailsService.getUserDetails(userId);
       setUserDetails(details);
-      console.log("user details", details)
     } catch (err) {
       console.error("Failed to load user details:", err);
     }

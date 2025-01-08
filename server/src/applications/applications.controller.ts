@@ -15,7 +15,6 @@ export class ApplicationsController {
   }
   @Post()
   async createApplication(@Body() data: ApplicationIn) {
-    console.log('controller', data)
     return this.applicationsService.createApplication(data);
   }
 

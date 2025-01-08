@@ -1,6 +1,6 @@
 import { ApplicationCore } from '@packages/types';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:3000/api';
 
 export const getApplicationsByPositionId = async (positionId: string): Promise<ApplicationCore[]> => {
     const response = await fetch(`${API_URL}/applications?positionId=${positionId}`);

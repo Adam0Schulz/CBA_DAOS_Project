@@ -8,7 +8,6 @@ export class EnsemblesController {
 
   @Get()
   async getAllEnsembles() {
-    console.log('HELLO')
     return this.ensemblesService.getAllEnsembles();
   }
   // @Get('user/:userId')

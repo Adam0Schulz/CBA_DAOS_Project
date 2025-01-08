@@ -11,7 +11,6 @@ export class EnsembleRepository {
 
   async findAll(): Promise<Ensemble[]> {
     const ensembles = await this.ensembleModel.find().populate('positions').exec();
-    console.log('Ensembles fetched:', ensembles);
     return ensembles;
   }
 

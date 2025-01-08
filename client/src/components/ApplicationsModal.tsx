@@ -25,7 +25,6 @@ const ApplicationsModal: React.FC<ApplicationsModalProps> = ({
         if (isOpen && positionId) {
             fetchApplications();
         }
-        console.log("applications", applications)
     }, [isOpen, positionId]);
 
     const fetchApplications = async () => {
