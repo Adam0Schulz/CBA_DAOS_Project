@@ -31,20 +31,20 @@ export class UsersController {
     return this.usersService.getUserById(trimmedId);
   }
 
-  @Get('profile/:id')
-  async getProfile(@Param('id') id: string) {
-    const user = await this.usersService.getUserById(id);
-    if (!user) {
-      throw new Error('User not found');
-    }
-    return {
-      _id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      createdAt: user.createdAt,
-    };
-  }
+  // @Get('profile/:id')
+  // async getProfile(@Param('id') id: string) {
+  //   const user = await this.usersService.getUserById(id);
+  //   if (!user) {
+  //     throw new Error('User not found');
+  //   }
+  //   return {
+  //     _id: user._id,
+  //     firstName: user.firstName,
+  //     lastName: user.lastName,
+  //     email: user.email,
+  //     createdAt: user.createdAt,
+  //   };
+  // }
 
   @Put(':id')
   async updateUserProfile(@Param('id') id: string, @Body() updateData: Partial<User>): Promise<{ user: User, token: string }> {
@@ -67,7 +67,8 @@ export class UsersController {
 
   @Delete(':id')
   async deleteUser(@Request() req, @Param('id') userId: string) {
-    // Ensure the user can only delete their own account
+
+    // Make sure the user can only delete their own account
     if (req.user.id !== userId) {
       throw new UnauthorizedException('You can only delete your own account');
     }
