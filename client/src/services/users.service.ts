@@ -1,5 +1,3 @@
-import { getAuthHeader } from '../utils/auth';
-
 const API_URL = 'http://localhost:5000/users';
 
 export const userService = {

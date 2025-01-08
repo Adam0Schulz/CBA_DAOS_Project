@@ -24,12 +24,11 @@ const AuthForm: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const validatePassword = (password: string): string | null => {
-    // Check password length
+
     if (password.length < 6) {
       return "Password must be at least 6 characters long";
     }
 
-    // Check password complexity
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
@@ -109,16 +108,14 @@ const AuthForm: React.FC = () => {
       const authData = data as AuthResponse;
       
       if (isLogin) {
-        // Store only the token
         localStorage.setItem('token', authData.access_token);
-        // Redirect to main page after login
         window.location.href = '/';
+
       } else {
-        // For registration, just switch to login mode
         setIsLogin(true);
         setError(null);
         setSuccessMessage("Registration successful! You can now log in with your credentials.");
-        // Clear the form fields
+
         if (emailInputRef.current) emailInputRef.current.value = '';
         if (passwordInputRef.current) passwordInputRef.current.value = '';
         if (firstNameInputRef.current) firstNameInputRef.current.value = '';
@@ -282,7 +279,7 @@ const AuthForm: React.FC = () => {
         </div>
       </form>
 
-      {/* Toggle Auth Mode Button */}
+      {/* Toggle Register / Login */}
       <div className="mt-4">
         <button
           type="button"

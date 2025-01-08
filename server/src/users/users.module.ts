@@ -8,6 +8,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     DatabaseModule,
+    // We are configuring the JWT module here, so when we edit a user, it creates a new token with the updated information
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
