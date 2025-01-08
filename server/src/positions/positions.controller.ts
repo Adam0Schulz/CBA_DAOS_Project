@@ -10,10 +10,6 @@ export class PositionsController {
   async getAllPositions() {
     return this.PositionsService.getAllPositions();
   }
-  // @Get('user/:userId')
-  // async getPositonssByUser(@Param('userId') userId: string) {
-  //   return this.PositonssService.getPositonssByUser(userId);
-  // }
   @Post()
   async createPositions(@Body() data: PositionCore) {
     return this.PositionsService.createPosition(data);

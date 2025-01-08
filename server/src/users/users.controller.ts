@@ -72,7 +72,6 @@ export class UsersController {
     if (req.user.id !== userId) {
       throw new UnauthorizedException('You can only delete your own account');
     }
-
     await this.usersService.deleteUser(userId);
     return { message: 'Account successfully deleted' };
   }

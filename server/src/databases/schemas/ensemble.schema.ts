@@ -9,7 +9,7 @@ export const EnsembleSchema = new Schema<Ensemble>({
   toObject: { virtuals: true }
 });
 
-// Virtual populate to get positions
+// Virtual getter to get positions
 EnsembleSchema.virtual('positions', {
   ref: 'Position',
   localField: '_id',

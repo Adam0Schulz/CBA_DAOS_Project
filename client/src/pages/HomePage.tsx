@@ -1,4 +1,6 @@
 import { User } from "@packages/types";
+import { Link } from "react-router-dom";
+import image from "../assets/image.png"  
 
 function HomePage() {
   const handleFetch = async () => {
@@ -11,30 +13,23 @@ function HomePage() {
 
   return (
     <>
-      <main className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <main className="flex flex-col items-center justify-center min-h-screen bg-white">
         {/* Header Section */}
-        <div className="flex flex-col items-center space-y-4">
-          <h1 className="text-red-700 text-4xl font-bold mb-4">Musik Samspil</h1>
-          <p className="text-gray-800 text-xl text-center mb-6">
-          The place where amateur musicians connect and play music together.
-          </p>
-          <div className="flex items-center gap-4">
-            {/* Dropdown */}
-            <select
-              className="text-gray-700 text-lg border border-gray-300 rounded-lg px-6 py-3 focus:outline-none focus:ring-2 focus:ring-red-500 w-60"
-              defaultValue=""
-            >
-              <option value="" disabled hidden>
-                Choose instrument
-              </option>
-              <option value="guitar">Guitar</option>
-              <option value="piano">Piano</option>
-              <option value="violin">Violin</option>
-            </select>
-            {/* Button */}
-            <button className="bg-blue-900 text-white text-lg font-medium px-8 py-3 rounded-lg hover:bg-red-700 transition duration-300">
-              See ensembles
-            </button>
+        <div className="flex flex-row items-center justify-center gap-16 max-w-7xl mx-auto px-4">
+          <div className="flex flex-col items-start space-y-4">
+            <h1 className="text-red-700 text-4xl font-bold mb-4 uppercase">THE PLACE WHERE AMATEUR MUSICIANS CONNECT AND PLAY MUSIC TOGETHER.</h1>
+            <div className="flex items-center gap-4">
+              {/* Button */}
+              <Link to="/ensembles" 
+                className="bg-blue-900 text-white text-lg font-medium px-8 py-3 rounded-lg hover:opacity-90 transition duration-300"
+                style={{"backgroundColor": "rgb(52, 59, 93)"}}
+              >
+                See ensembles
+              </Link>
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <img src={image} alt="abstract music notes" className="max-w-md" />
           </div>
         </div>
       </main>

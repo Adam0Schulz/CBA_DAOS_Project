@@ -20,7 +20,6 @@ export const UserDetailSchema = new Schema<UserDetail>({
   lastLoggedIn: { type: Date, default: null, required: false }
 });
 
-// Add a virtual getter for the application field
 UserDetailSchema.virtual('application', {
   ref: 'Application',
   localField: 'applicationId',

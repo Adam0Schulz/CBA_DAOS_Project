@@ -30,7 +30,6 @@ export class AuthService {
   }
 
   async login(user: any) {
-    // Update last login time in user details
     const userId = typeof user._id === 'string' ? new Types.ObjectId(user._id) : user._id;
     const userDetail = await this.userDetailsService.getUserDetailByUserId(userId);
     if (userDetail) {
@@ -53,12 +52,9 @@ export class AuthService {
   }
 
   private validatePassword(password: string): void {
-    // Check password length
     if (password.length < 6) {
       throw new BadRequestException('Password must be at least 6 characters long');
     }
-
-    // Check password complexity
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
@@ -80,8 +76,6 @@ export class AuthService {
       if (!userData.email || !userData.password || !userData.firstName || !userData.lastName) {
         throw new BadRequestException('All fields are required');
       }
-
-      // Validate password
       this.validatePassword(userData.password);
 
       const hashedPassword = await this.hashPassword(userData.password);
@@ -90,8 +84,7 @@ export class AuthService {
         password: hashedPassword
       };
       const newUser = await this.usersService.createUser(userToCreate);
-      
-      // Create user details for the new user
+
       await this.userDetailsService.createUserDetail({
         userId: new Types.ObjectId(newUser._id.toString()),
         isOpenToWork: false,

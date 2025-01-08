@@ -13,10 +13,6 @@ export class ApplicationsController {
     }
     return this.applicationsService.getAllApplications();
   }
-  // @Get('user/:userId')
-  // async getApplicationsByUser(@Param('userId') userId: string) {
-  //   return this.applicationsService.getApplicationsByUser(userId);
-  // }
   @Post()
   async createApplication(@Body() data: ApplicationIn) {
     console.log('controller', data)

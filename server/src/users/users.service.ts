@@ -13,7 +13,7 @@ export class UsersService {
     private readonly userRepository: UserRepository,
     private readonly userDetailRepository: UserDetailRepository,
     private readonly jwtService: JwtService
-  ) {}
+  ) { }
 
 
   async getAllUsers() {
@@ -37,9 +37,8 @@ export class UsersService {
   }
 
   async updateUserProfile(id: string, updateData: Partial<User>): Promise<{ user: User, token: string }> {
-    // Update user
     const updatedUser = await this.userRepository.updateUser(id, updateData);
-    
+
     if (!updatedUser) {
       throw new Error('Failed to update user');
     }
@@ -47,9 +46,9 @@ export class UsersService {
     // Generate new token with updated information
     const token = await this.generateToken(updatedUser);
 
-    return { 
+    return {
       user: updatedUser,
-      token 
+      token
     };
   }
 
@@ -77,7 +76,7 @@ export class UsersService {
       email: user.email,
       createdAt: user.createdAt,
     });
-  
+
     return {
       _id: user._id,
       firstName: user.firstName,
@@ -93,7 +92,6 @@ export class UsersService {
       throw new Error('User not found');
     }
 
-    // Verify old password
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Current password is incorrect');
@@ -120,21 +118,14 @@ export class UsersService {
       );
     }
 
-    // Hash new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password
     await this.userRepository.updateUser(id, { password: hashedPassword });
   }
 
   async deleteUser(userId: string): Promise<void> {
-    // Convert userId to ObjectId
     const userObjectId = new Types.ObjectId(userId);
-
-    // First, delete the associated user details
     await this.userDetailRepository.deleteUserDetail(userObjectId);
-
-    // Then delete the user
     await this.userRepository.deleteUser(userId);
   }
 }
