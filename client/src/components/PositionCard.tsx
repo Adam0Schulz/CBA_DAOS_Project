@@ -58,7 +58,7 @@ const PositionCard: React.FC<PositionCardProps> = ({
 
     const fetchApplicationCount = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/applications?positionId=${positionId}`);
+            const response = await fetch(`http://localhost:3000/api/applications?positionId=${positionId}`);
             if (!response.ok) {
                 throw new Error('Failed to fetch applications');
             }

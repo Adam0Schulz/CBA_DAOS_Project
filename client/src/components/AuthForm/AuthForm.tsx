@@ -77,7 +77,7 @@ const AuthForm: React.FC = () => {
     }
 
     try {
-      const url = isLogin ? "http://localhost:5000/auth/login" : "http://localhost:5000/auth/register";
+      const url = isLogin ? "http://localhost:3000/api/auth/login" : "http://localhost:3000/api/auth/register";
       const response = await fetch(url, {
         method: "POST",
         headers: {

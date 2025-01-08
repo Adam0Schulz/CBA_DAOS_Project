@@ -124,7 +124,7 @@ const ProfilePage: React.FC = () => {
         throw new Error('No authentication token found');
       }
 
-      const response = await fetch(`http://localhost:5000/users/${user.id}`, {
+      const response = await fetch(`http://localhost:3000/api/users/${user.id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

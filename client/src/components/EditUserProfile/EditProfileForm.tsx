@@ -131,7 +131,7 @@ const EditProfileForm: React.FC<EditProfileFormProps> = ({
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/users/${user.id}/change-password`, {
+      const response = await fetch(`http://localhost:3000/api/users/${user.id}/change-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

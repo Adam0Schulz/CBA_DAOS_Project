@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000/users';
+const API_URL = 'http://localhost:3000/api/users';
 
 export const userService = {
   async getUserProfile(token: string) {
